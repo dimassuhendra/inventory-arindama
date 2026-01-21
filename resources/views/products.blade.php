@@ -200,7 +200,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // SweetAlert2 Toast & Notifikasi
         @if(session('success'))
             Swal.fire({
                 icon: 'success',
@@ -235,7 +234,7 @@
 
                 if (mode === 'edit') {
                     title.innerText = 'Perbarui Data Produk';
-                    form.action = `/products/${id}`; // Sesuaikan dengan route update Anda
+                    form.action = `/products/${id}`;
                     method.value = 'PUT';
 
                     // Isi Value
