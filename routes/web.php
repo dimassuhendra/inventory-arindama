@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StockEntryController;
 use App\Http\Controllers\StockExitController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -27,5 +28,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/stock-out', [StockExitController::class, 'store'])->name('stock-out.store');
     Route::delete('/stock-out/{id}', [StockExitController::class, 'destroy'])->name('stock-out.destroy');
     Route::resource('products', ProductController::class);
+    Route::resource('categories', CategoryController::class);
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
