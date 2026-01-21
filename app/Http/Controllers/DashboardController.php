@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Products;
 use App\Models\Suppliers;
-use App\Models\Categories;
+use App\Models\Category;
 use App\Models\Carts;
 use App\Models\StockEntries;
 use App\Models\StockExits;
@@ -17,7 +17,7 @@ class DashboardController extends Controller
         $data = [
             'total_products' => Products::count(),
             'total_suppliers' => Suppliers::count(),
-            'total_categories' => Categories::count(),
+            'total_categories' => Category::count(),
             'low_stock' => Products::where('quantity', '<=', 5)->count(),
             'pending_carts' => Carts::count(),
             'recent_entries' => StockEntries::with('product')->latest()->take(5)->get(),
