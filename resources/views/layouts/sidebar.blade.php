@@ -81,7 +81,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#"
+                    <a href="{{ route('suppliers.index') }}"
                         class="flex items-center px-4 py-3 rounded-xl group transition-all {{ request()->routeIs('suppliers.*') ? 'text-blue-600 bg-blue-50 shadow-sm shadow-blue-100' : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50' }}">
                         <i class="fa-solid fa-building w-6 text-lg"></i>
                         <span class="ml-3 font-semibold">Suppliers</span>
@@ -90,7 +90,7 @@
             </ul>
         </div>
 
-        <div>
+        <!-- <div>
             <p class="px-4 mb-4 text-xs font-bold text-gray-400 uppercase tracking-[0.2em] font-domine">Asset & Fleet
             </p>
             <ul class="space-y-2">
@@ -109,7 +109,7 @@
                     </a>
                 </li>
             </ul>
-        </div>
+        </div> -->
 
         <div class="pt-4 border-t border-gray-50">
             <form action="{{ route('logout') }}" method="POST">
