@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ActivityLogsController;
 use App\Http\Controllers\StockEntryController;
 use App\Http\Controllers\StockExitController;
+use App\Http\Controllers\CartRequestController; 
 // use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
@@ -32,6 +33,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/stock-out', [StockExitController::class, 'index'])->name('stock-out.index');
     Route::post('/stock-out', [StockExitController::class, 'store'])->name('stock-out.store');
     Route::delete('/stock-out/{id}', [StockExitController::class, 'destroy'])->name('stock-out.destroy');
+    Route::get('/cart-request', [CartRequestController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add', [CartRequestController::class, 'addToCart'])->name('cart.add');
+    Route::post('/cart/submit/{id}', [CartRequestController::class, 'submitRequest'])->name('cart.submit');
+    Route::post('/cart/approve/{id}', [CartRequestController::class, 'approve'])->name('cart.approve');
     // Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     // Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     // Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');

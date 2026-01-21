@@ -3,8 +3,11 @@
 @section('content')
     <div x-data="{ openModal: false, activeLog: {} }" class="space-y-6">
         <div>
-            <h2 class="text-2xl font-bold text-slate-800">System Activity Log</h2>
-            <p class="text-sm text-slate-500 font-domine uppercase tracking-widest mt-1">Audit Trail & Perubahan Data</p>
+            <h2 class="text-2xl font-bold text-white tracking-tight">System Activity Log</h2>
+
+            <p class="text-xs text-blue-100/70 font-domine uppercase tracking-[0.2em] mt-1">
+                Audit Trail & Perubahan Data
+            </p>
         </div>
 
         <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">

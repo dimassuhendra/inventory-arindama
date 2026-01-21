@@ -27,4 +27,22 @@ class AuthController extends Controller
         // Mengirimkan session error untuk memicu modal SweetAlert2
         return back()->with('loginError', 'Akses Ditolak! Akun tidak ditemukan atau password salah.');
     }
+
+    public function logout(Request $request)
+    {
+        // Opsional: Catat aktivitas logout sebelum session dihancurkan
+        if (Auth::check()) {
+            \App\Models\ActivityLogs::log("User Logout", Auth::user());
+        }
+
+        Auth::logout();
+
+        // Menghapus session agar tidak bisa digunakan kembali
+        $request->session()->invalidate();
+
+        // Me-reset token CSRF agar aman dari serangan session fixation
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'Anda telah berhasil keluar dari sistem.');
+    }
 }

@@ -4,11 +4,11 @@
     <div class="space-y-6">
         <div class="flex justify-between items-center">
             <div>
-                <h2 class="text-2xl font-bold text-slate-800">Kategori Produk</h2>
-                <p class="text-sm text-slate-500 font-domine uppercase tracking-widest mt-1">Pengelompokan Inventaris</p>
+                <h2 class="text-2xl font-bold text-white">Kategori Produk</h2>
+                <p class="text-sm text-blue-100/70 font-domine uppercase tracking-widest mt-1">Pengelompokan Inventaris</p>
             </div>
             <button onclick="openCategoryModal('add')"
-                class="bg-arindama hover:bg-blue-700 text-white px-6 py-3 rounded-2xl shadow-lg transition flex items-center gap-2 font-bold text-sm">
+                class="bg-white hover:bg-blue-100/70 text-blue-700 px-6 py-3 rounded-2xl shadow-lg transition flex items-center gap-2 font-bold text-sm">
                 <i class="fa-solid fa-tags"></i> Tambah Kategori
             </button>
         </div>

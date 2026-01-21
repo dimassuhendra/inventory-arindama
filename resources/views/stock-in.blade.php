@@ -4,8 +4,8 @@
     <div class="space-y-6">
         <div class="flex justify-between items-center">
             <div>
-                <h2 class="text-2xl font-bold text-slate-800">Stock In (Barang Masuk)</h2>
-                <p class="text-sm text-slate-500 font-domine uppercase tracking-widest mt-1">Kelola Riwayat Stok Masuk</p>
+                <h2 class="text-2xl font-bold text-white">Stock In (Barang Masuk)</h2>
+                <p class="text-sm text-blue-100/70 font-domine uppercase tracking-widest mt-1">Kelola Riwayat Stok Masuk</p>
             </div>
             <button onclick="openModal('add')"
                 class="bg-arindama hover:bg-blue-700 text-white px-6 py-3 rounded-2xl shadow-lg transition flex items-center gap-2 font-bold text-sm">
