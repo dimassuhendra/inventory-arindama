@@ -53,13 +53,7 @@
                         <span class="ml-3 font-semibold">Carts Request</span>
                     </a>
                 </li>
-                <li>
-                    <a href="#"
-                        class="flex items-center px-4 py-3 rounded-xl group transition-all {{ request()->routeIs('orders.*') ? 'text-blue-600 bg-blue-50 shadow-sm shadow-blue-100' : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50' }}">
-                        <i class="fa-solid fa-truck-fast w-6 text-lg"></i>
-                        <span class="ml-3 font-semibold">Orders Log</span>
-                    </a>
-                </li>
+                
             </ul>
         </div>
 

@@ -6,12 +6,14 @@ use App\Models\Products;
 use App\Models\StockExits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class StockExitController extends Controller
 {
     public function index()
     {
-        $exits = StockExits::with('product')->latest()->paginate(10);
+        // Load relasi user untuk menampilkan siapa yang mengeluarkan barang
+        $exits = StockExits::with(['product', 'user'])->latest()->paginate(10);
         $products = Products::where('quantity', '>', 0)->orderBy('name', 'asc')->get();
 
         return view('stock-out', compact('exits', 'products'));
@@ -19,21 +21,25 @@ class StockExitController extends Controller
 
     public function store(Request $request)
     {
-        $product = Products::findOrFail($request->product_id);
-
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|numeric|min:1|max:' . $product->quantity,
+            'quantity' => 'required|numeric|min:0.01',
             'exit_date' => 'required|date',
-        ], [
-            'quantity.max' => 'Stok tidak mencukupi! Sisa stok saat ini: ' . $product->quantity
         ]);
+
+        $product = Products::findOrFail($request->product_id);
+
+        // Validasi manual stok mencukupi
+        if ($product->quantity < $request->quantity) {
+            return redirect()->back()->with('error', 'Stok tidak mencukupi! Sisa stok: ' . $product->quantity);
+        }
 
         try {
             DB::transaction(function () use ($request, $product) {
-                // 1. Catat riwayat keluar
+                // 1. Catat riwayat keluar dengan user_id
                 StockExits::create([
                     'product_id' => $request->product_id,
+                    'user_id' => Auth::id(),
                     'quantity' => $request->quantity,
                     'exit_date' => $request->exit_date,
                     'description' => $request->description,
@@ -45,21 +51,24 @@ class StockExitController extends Controller
 
             return redirect()->back()->with('success', 'Barang berhasil dikeluarkan!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
 
     public function destroy($id)
     {
-        $exit = StockExits::findOrFail($id);
-        $product = Products::findOrFail($exit->product_id);
+        try {
+            DB::transaction(function () use ($id) {
+                $exit = StockExits::findOrFail($id);
+                $product = Products::findOrFail($exit->product_id);
 
-        DB::transaction(function () use ($exit, $product) {
-            // Kembalikan stok yang tadinya keluar
-            $product->increment('quantity', $exit->quantity);
-            $exit->delete();
-        });
+                $product->increment('quantity', $exit->quantity);
+                $exit->delete();
+            });
 
-        return redirect()->back()->with('success', 'Data berhasil dihapus, stok dikembalikan.');
+            return redirect()->back()->with('success', 'Transaksi dibatalkan, stok dikembalikan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal membatalkan: ' . $e->getMessage());
+        }
     }
 }

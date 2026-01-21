@@ -12,9 +12,13 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->string('order_number')->unique();
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained();
-            $table->string('invoice_number')->unique();
-            $table->string('status')->default('Menunggu Konfirmasi');
+            $table->string('customer_name');
+            $table->double('quantity');
+            $table->enum('status', ['pending', 'completed', 'cancelled'])->default('pending');
+            $table->text('note')->nullable();
             $table->timestamps();
         });
     }

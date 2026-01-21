@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StockEntryController;
 use App\Http\Controllers\StockExitController;
+// use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SupplierController;
@@ -28,6 +29,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/stock-out', [StockExitController::class, 'index'])->name('stock-out.index');
     Route::post('/stock-out', [StockExitController::class, 'store'])->name('stock-out.store');
     Route::delete('/stock-out/{id}', [StockExitController::class, 'destroy'])->name('stock-out.destroy');
+    // Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    // Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    // Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::resource('products', ProductController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('suppliers', SupplierController::class);
