@@ -40,7 +40,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#"
+                    <a href="{{ route('stock-out.index') }}"
                         class="flex items-center px-4 py-3 rounded-xl group transition-all {{ request()->routeIs('stock-out.*') ? 'text-blue-600 bg-blue-50 shadow-sm shadow-blue-100' : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50' }}">
                         <i class="fa-solid fa-file-export w-6 text-lg"></i>
                         <span class="ml-3 font-semibold">Stock Out</span>
@@ -67,7 +67,7 @@
             <p class="px-4 mb-4 text-xs font-bold text-gray-400 uppercase tracking-[0.2em] font-domine">Master Data</p>
             <ul class="space-y-2">
                 <li>
-                    <a href="#"
+                    <a href="{{ route('products.index') }}"
                         class="flex items-center px-4 py-3 rounded-xl group transition-all {{ request()->routeIs('products.*') ? 'text-blue-600 bg-blue-50 shadow-sm shadow-blue-100' : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50' }}">
                         <i class="fa-solid fa-box w-6 text-lg"></i>
                         <span class="ml-3 font-semibold">Products</span>

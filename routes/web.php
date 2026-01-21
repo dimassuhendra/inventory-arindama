@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StockEntryController;
+use App\Http\Controllers\StockExitController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -21,5 +23,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/stock-in', [StockEntryController::class, 'store'])->name('stock-in.store');
     Route::put('/stock-in/{id}', [StockEntryController::class, 'update'])->name('stock-in.update');
     Route::delete('/stock-in/{id}', [StockEntryController::class, 'destroy'])->name('stock-in.destroy');
+    Route::get('/stock-out', [StockExitController::class, 'index'])->name('stock-out.index');
+    Route::post('/stock-out', [StockExitController::class, 'store'])->name('stock-out.store');
+    Route::delete('/stock-out/{id}', [StockExitController::class, 'destroy'])->name('stock-out.destroy');
+    Route::resource('products', ProductController::class);
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
