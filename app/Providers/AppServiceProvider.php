@@ -9,6 +9,7 @@ use App\Models\Users;
 use App\Models\Suppliers;
 use App\Models\StockExits;
 use App\Models\Carts;
+use App\Models\Production;
 use App\Models\StockEntries;
 use App\Observers\LogObserver;
 use Illuminate\Support\ServiceProvider;
@@ -35,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
         Suppliers::observe(LogObserver::class);
         Users::observe(LogObserver::class);
         Carts::observe(LogObserver::class);
+        Production::observe(LogObserver::class);
         StockExits::observe(LogObserver::class);
         StockEntries::observe(LogObserver::class);
     }

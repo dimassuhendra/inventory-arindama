@@ -25,7 +25,17 @@
         body {
             background-attachment: fixed;
         }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .bg-gradient-blue {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            background-attachment: fixed;
+        }
     </style>
+
 </head>
 
 <body class="font-fredoka bg-gradient-blue min-h-screen" x-data="{ isSideOpen: false }">

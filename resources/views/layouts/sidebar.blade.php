@@ -1,9 +1,9 @@
-<aside x-show="isSideOpen" x-transition:enter="transition transform ease-out duration-300"
-    x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
-    x-transition:leave="transition transform ease-in duration-300" x-transition:leave-start="translate-x-0"
-    x-transition:leave-end="-translate-x-full"
-    class="fixed left-0 lg:left-6 top-0 lg:top-6 bottom-0 lg:bottom-6 h-full lg:h-auto w-72 bg-white/95 backdrop-blur-md lg:rounded-[2.5rem] flex flex-col z-50 font-fredoka shadow-2xl border-r lg:border border-white/20 lg:flex"
-    :class="{'flex': isSideOpen, 'hidden lg:flex': !isSideOpen}">
+<aside x-cloak x-show="window.innerWidth >= 1024 ? true : isSideOpen"
+    x-transition:enter="transition transform ease-out duration-300" x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0" x-transition:leave="transition transform ease-in duration-300"
+    x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
+    class="fixed left-0 lg:left-6 top-0 lg:top-6 bottom-0 lg:bottom-6 w-72 bg-white/95 backdrop-blur-md lg:rounded-[2.5rem] flex flex-col z-50 font-fredoka shadow-2xl border-r lg:border border-white/20"
+    @click.away="if(window.innerWidth < 1024) isSideOpen = false">
 
     <div class="lg:hidden absolute right-4 top-4">
         <button @click="isSideOpen = false" class="text-gray-400 hover:text-blue-600">
@@ -56,6 +56,13 @@
                         class="flex items-center px-4 py-3 rounded-xl group transition-all {{ request()->routeIs('stock-out.*') ? 'text-blue-600 bg-blue-50 shadow-sm' : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50' }}">
                         <i class="fa-solid fa-file-export w-6 text-lg"></i>
                         <span class="ml-3 font-bold text-sm">Stock Out</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('loans.index')   }}"
+                        class="flex items-center px-4 py-3 rounded-xl group transition-all {{ request()->routeIs('loans.*') ? 'text-blue-600 bg-blue-50 shadow-sm' : 'text-gray-400 hover:text-blue-600 hover:bg-blue-50' }}">
+                        <i class="fa-solid fa-file-export w-6 text-lg"></i>
+                        <span class="ml-3 font-bold text-sm">Peminjaman Barang</span>
                     </a>
                 </li>
                 <!-- <li>
