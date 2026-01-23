@@ -22,7 +22,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
             <table class="w-full text-left border-collapse">
                 <thead class="bg-slate-50 border-b border-slate-100">
                     <tr>

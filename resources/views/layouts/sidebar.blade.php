@@ -2,7 +2,7 @@
     x-transition:enter="transition transform ease-out duration-300" x-transition:enter-start="-translate-x-full"
     x-transition:enter-end="translate-x-0" x-transition:leave="transition transform ease-in duration-300"
     x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full"
-    class="fixed left-0 lg:left-6 top-0 lg:top-6 bottom-0 lg:bottom-6 w-72 bg-white/95 backdrop-blur-md lg:rounded-[2.5rem] flex flex-col z-50 font-dynapuff shadow-2xl border-r lg:border border-white/20"
+    class="fixed left-0 lg:left-6 top-0 lg:top-6 bottom-0 lg:bottom-6 w-72 bg-white/95 backdrop-blur-md lg:rounded-[1rem] flex flex-col z-50 font-dynapuff shadow-2xl border-r lg:border border-white/20"
     @click.away="if(window.innerWidth < 1024) isSideOpen = false">
 
     <div class="lg:hidden absolute right-4 top-4">
@@ -19,7 +19,7 @@
 
     <nav class="flex-1 px-6 space-y-4 overflow-y-auto pb-10 custom-scrollbar">
 
-		<div x-data="{ open: {{ request()->routeIs('dashboard.*', 'activity-log.*') ? 'true' : 'false' }} }">
+		<div x-data="{ open: {{ request()->routeIs('dashboard', 'activity-log.*') ? 'true' : 'false' }} }">
 			<button @click="open = !open" class="w-full flex items-center justify-between px-4 mb-4 group">
 				<p class="text-[10px] font-bold text-blue-900/40 uppercase tracking-[0.2em] font-acme">Main Menu</p>
 				<i class="fa-solid fa-chevron-down text-[10px] text-blue-900/20 transition-transform duration-300" :class="open ? 'rotate-0' : '-rotate-90'"></i>

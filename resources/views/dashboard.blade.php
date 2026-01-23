@@ -4,7 +4,7 @@
     <div class="space-y-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             <div
-                class="bg-white/90 backdrop-blur-md p-6 rounded-[2.5rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
+                class="bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Total Produk</p>
                     <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $total_products }}</h3>
@@ -18,7 +18,7 @@
             </div>
 
             <div
-                class="bg-white/90 backdrop-blur-md p-6 rounded-[2.5rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
+                class="bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Kategori</p>
                     <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $total_categories }}</h3>
@@ -32,7 +32,7 @@
             </div>
 
             <div
-                class="bg-white/90 backdrop-blur-md p-6 rounded-[2.5rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
+                class="bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Suppliers</p>
                     <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $total_suppliers }}</h3>
@@ -46,7 +46,7 @@
             </div>
 
             <div
-                class="bg-white/90 backdrop-blur-md p-6 rounded-[2.5rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
+                class="bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Aset Dipinjam</p>
 
@@ -69,7 +69,7 @@
             </div>
 
             <div
-                class="bg-red-500 p-6 rounded-[2.5rem] shadow-xl shadow-red-200/50 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
+                class="bg-red-500 p-6 rounded-[1rem] shadow-xl shadow-red-200/50 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10 text-white">
                     <p class="text-[10px] font-bold opacity-80 uppercase tracking-widest font-acme">Stok Menipis</p>
                     <h3 class="text-4xl font-bold mt-2">{{ $low_stock }}</h3>
@@ -83,7 +83,7 @@
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="bg-white/90 backdrop-blur-md p-8 rounded-[3rem] shadow-xl border border-amber-100 flex flex-col">
+            <div class="bg-white/90 backdrop-blur-md p-8 rounded-[1rem] shadow-xl border border-amber-100 flex flex-col">
                 <div class="flex items-center gap-4 mb-6">
                     <div class="bg-amber-500 text-white p-4 rounded-2xl shadow-lg shadow-amber-200">
                         <i class="fa-solid fa-bell text-xl animate-bounce"></i>
@@ -115,7 +115,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-[3rem] shadow-sm border border-slate-100 p-8">
+            <div class="bg-white rounded-[1rem] shadow-sm border border-slate-100 p-8">
                 <h4 class="font-bold text-slate-800 mb-6 flex items-center justify-between">
                     <span class="flex items-center gap-2">
                         <span class="w-1.5 h-6 bg-green-500 rounded-full"></span> Riwayat Masuk
@@ -145,7 +145,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-[3rem] shadow-sm border border-slate-100 p-8">
+            <div class="bg-white rounded-[1rem] shadow-sm border border-slate-100 p-8">
                 <h4 class="font-bold text-slate-800 mb-6 flex items-center justify-between">
                     <span class="flex items-center gap-2">
                         <span class="w-1.5 h-6 bg-red-500 rounded-full"></span> Riwayat Keluar

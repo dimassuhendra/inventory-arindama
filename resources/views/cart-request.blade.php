@@ -24,7 +24,7 @@
             </div>
 
             @if($activeCart)
-                <div class="bg-indigo-900 p-6 rounded-[2rem] text-white shadow-xl">
+                <div class="bg-indigo-900 p-6 rounded-[1rem] text-white shadow-xl">
                     <h3 class="font-bold mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-cart-shopping"></i> Keranjang Anda
                     </h3>

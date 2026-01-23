@@ -14,7 +14,7 @@
             </button>
         </div>
 
-        <div class="bg-white/90 backdrop-blur-md rounded-[2rem] shadow-xl overflow-hidden border border-white/20">
+        <div class="bg-white/90 backdrop-blur-md rounded-[1rem] shadow-xl overflow-hidden border border-white/20">
             <table class="w-full text-left border-collapse text-sm">
                 <thead class="bg-blue-50/50 border-b border-blue-100">
                     <tr>

@@ -9,7 +9,7 @@ class ActivityLogsController extends Controller
 {
     public function index()
     {
-        $logs = ActivityLogs::with('user')->latest()->paginate(20);
+        $logs = ActivityLogs::with('user')->latest()->paginate(10);
         return view('activity-log', compact('logs'));
     }
 
