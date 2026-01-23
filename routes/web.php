@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     // Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     // Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     // Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::get('/products/export', [ProductController::class, 'export'])->name('products.export');
     Route::resource('products', ProductController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('suppliers', SupplierController::class);

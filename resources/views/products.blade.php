@@ -9,10 +9,17 @@
                     Total Inventaris: <span class="text-arindama text-blue-100/70">{{ $products->total() }} Item</span>
                 </p>
             </div>
-            <button onclick="openModal('add')"
-                class="bg-white hover:bg-blue-100/70 text-blue-700 px-6 py-3 rounded-2xl shadow-lg transition flex items-center gap-2 font-bold text-sm">
-                <i class="fa-solid fa-box-archive"></i> Tambah Produk Baru
-            </button>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('products.export') }}"
+                    class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-2xl shadow-lg transition flex items-center gap-2 font-bold text-sm">
+                    <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+                </a>
+
+                <button onclick="openModal('add')"
+                    class="bg-white hover:bg-blue-100/70 text-blue-700 px-6 py-3 rounded-2xl shadow-lg transition flex items-center gap-2 font-bold text-sm">
+                    <i class="fa-solid fa-box-archive"></i> Tambah Produk Baru
+                </button>
+            </div>
         </div>
 
         <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">

@@ -8,6 +8,8 @@ use App\Models\Suppliers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\ProductsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -77,5 +79,11 @@ class ProductController extends Controller
         $product = Products::findOrFail($id);
         $product->delete();
         return redirect()->back()->with('success', 'Produk berhasil dihapus.');
+    }
+
+    // Tambahkan method ini di dalam class
+    public function export()
+    {
+        return Excel::download(new ProductsExport, 'Laporan-Stok-Arindama-' . date('d-M-Y') . '.xlsx');
     }
 }
