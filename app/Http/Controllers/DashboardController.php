@@ -5,7 +5,7 @@ use App\Models\Carts;
 use App\Models\Category;
 use App\Models\Products;
 use App\Models\Suppliers;
-use App\Models\Production; // Pastikan model Production di-import
+use App\Models\Production; 
 use App\Models\StockExits;
 use App\Models\StockEntries;
 use Illuminate\Http\Request;
