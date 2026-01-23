@@ -3,6 +3,12 @@
         class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl px-8 py-4 border border-white/20 flex items-center justify-between">
 
         <div class="flex items-center gap-4">
+			<!-- <div class="p-1">
+				<div class="bg-blue-50/50 px-6 py-4 rounded-2xl flex items-center justify-center border border-blue-100/50">
+					<img src="{{ asset('img/logo-arindama.png') }}" alt="Arindama Logo" class="w-40 h-auto object-contain">
+				</div>
+			</div> -->
+		
             <button @click="isSideOpen = true" class="lg:hidden bg-blue-600 text-white p-2.5 rounded-xl shadow-lg">
                 <i class="fa-solid fa-bars-staggered text-sm"></i>
             </button>
@@ -11,8 +17,8 @@
                 <i class="fa-solid fa-house-chimney text-sm"></i>
             </div>
             <div>
-                <h1 class="text-lg font-bold text-blue-900 leading-none font-fredoka">Dashboard</h1>
-                <p class="text-[10px] text-blue-400 font-domine uppercase tracking-widest mt-1 font-bold">Management
+                <h1 class="text-lg font-bold text-blue-900 leading-none font-dynapuff">Dashboard</h1>
+                <p class="text-[10px] text-blue-400 font-acme uppercase tracking-widest mt-1 font-bold">Management
                     Overview</p>
             </div>
         </div>
@@ -20,7 +26,7 @@
         <div class="flex items-center gap-6">
             <div class="hidden sm:flex items-center gap-3 pr-6 border-r border-gray-100 text-right">
                 <div>
-                    <p class="text-sm font-bold text-blue-900 leading-none font-fredoka">{{ Auth::user()->name }}</p>
+                    <p class="text-sm font-bold text-blue-900 leading-none font-dynapuff">{{ Auth::user()->name }}</p>
                     <p class="text-[10px] text-blue-500 font-bold uppercase mt-1 italic">
                         {{ Auth::user()->role ?? 'Administrator' }}
                     </p>

@@ -5,7 +5,7 @@
         <div class="flex justify-between items-center">
             <div>
                 <h2 class="text-2xl font-bold text-white">Peminjaman Barang</h2>
-                <p class="text-blue-100/70 text-xs font-domine uppercase tracking-widest mt-1">Kelola sirkulasi peminjaman
+                <p class="text-blue-100/70 text-xs font-acme uppercase tracking-widest mt-1">Kelola sirkulasi peminjaman
                     aset</p>
             </div>
             <button onclick="document.getElementById('modalLoan').classList.remove('hidden')"
@@ -36,7 +36,7 @@
                                 <span class="font-bold text-blue-700">{{ $loan->product->name }}</span> <br>
                                 <span class="text-xs text-gray-500">{{ $loan->quantity }} Unit</span>
                             </td>
-                            <td class="px-6 py-4 text-gray-600 font-domine">
+                            <td class="px-6 py-4 text-gray-600 font-acme">
                                 {{ \Carbon\Carbon::parse($loan->return_date)->format('d M Y') }}
                             </td>
                             <td class="px-6 py-4">
@@ -66,7 +66,7 @@
                                         <i class="fa-solid fa-box-open text-2xl text-blue-200"></i>
                                     </div>
                                     <p class="text-blue-900 font-bold text-lg">Belum ada barang terpinjam</p>
-                                    <p class="text-gray-400 text-xs font-domine mt-1">Semua aset tersedia atau belum ada
+                                    <p class="text-gray-400 text-xs font-acme mt-1">Semua aset tersedia atau belum ada
                                         aktivitas peminjaman.</p>
                                 </div>
                             </td>
@@ -80,7 +80,7 @@
     <div id="modalLoan"
         class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-lg rounded-[2.5rem] p-8 shadow-2xl">
-            <h3 class="text-xl font-bold text-blue-900 mb-6 font-fredoka">Form Peminjaman</h3>
+            <h3 class="text-xl font-bold text-blue-900 mb-6 font-dynapuff">Form Peminjaman</h3>
             <form action="{{ route('loans.store') }}" method="POST" class="space-y-4">
                 @csrf
                 <div class="grid grid-cols-2 gap-4">

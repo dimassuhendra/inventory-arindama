@@ -5,7 +5,7 @@
         <div class="flex justify-between items-center">
             <div>
                 <h2 class="text-2xl font-bold text-white">Master Produk</h2>
-                <p class="text-sm text-blue-100/70 font-domine uppercase tracking-widest mt-1">
+                <p class="text-sm text-blue-100/70 font-acme uppercase tracking-widest mt-1">
                     Total Inventaris: <span class="text-arindama text-blue-100/70">{{ $products->total() }} Item</span>
                 </p>
             </div>
@@ -95,7 +95,7 @@
                             <td colspan="4" class="px-6 py-16 text-center">
                                 <div class="flex flex-col items-center">
                                     <i class="fa-solid fa-box-open text-4xl text-slate-200 mb-4"></i>
-                                    <p class="text-slate-400 italic text-sm font-domine">Belum ada data produk yang terdaftar.
+                                    <p class="text-slate-400 italic text-sm font-acme">Belum ada data produk yang terdaftar.
                                     </p>
                                 </div>
                             </td>
@@ -118,7 +118,7 @@
                     <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                         <i class="fa-solid fa-box text-lg"></i>
                     </div>
-                    <h3 id="modalTitle" class="font-bold text-lg font-domine uppercase tracking-wide">Pendaftaran Produk
+                    <h3 id="modalTitle" class="font-bold text-lg font-acme uppercase tracking-wide">Pendaftaran Produk
                     </h3>
                 </div>
                 <button onclick="closeModal()" class="text-white/60 hover:text-white transition-all scale-125">

@@ -5,7 +5,7 @@
         <div class="flex justify-between items-center">
             <div>
                 <h2 class="text-2xl font-bold text-white">Stock Out (Barang Keluar)</h2>
-                <p class="text-sm text-blue-100/70 font-domine uppercase tracking-widest mt-1">Pengeluaran Inventaris</p>
+                <p class="text-sm text-blue-100/70 font-acme uppercase tracking-widest mt-1">Pengeluaran Inventaris</p>
             </div>
             <button onclick="document.getElementById('modalStockOut').classList.remove('hidden')"
                 class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-2xl shadow-lg transition flex items-center gap-2 font-bold text-sm">
@@ -29,7 +29,7 @@
                 <tbody class="divide-y divide-slate-50">
                     @forelse($exits as $exit)
                         <tr class="hover:bg-red-50/30 transition">
-                            <td class="px-6 py-4 text-sm text-slate-600 font-domine">
+                            <td class="px-6 py-4 text-sm text-slate-600 font-acme">
                                 {{ date('d/m/Y', strtotime($exit->exit_date)) }}
                             </td>
                             <td class="px-6 py-4">
@@ -74,7 +74,7 @@
         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
             <div class="bg-red-500 p-6 text-white flex justify-between items-center">
-                <h3 class="font-bold text-lg font-domine">INPUT BARANG KELUAR</h3>
+                <h3 class="font-bold text-lg font-acme">INPUT BARANG KELUAR</h3>
                 <button onclick="document.getElementById('modalStockOut').classList.add('hidden')"
                     class="text-white/80 hover:text-white"><i class="fa-solid fa-circle-xmark text-xl"></i></button>
             </div>

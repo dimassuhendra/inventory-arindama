@@ -5,7 +5,7 @@
         <div class="flex justify-between items-center">
             <div>
                 <h2 class="text-2xl font-bold text-white">Kategori Produk</h2>
-                <p class="text-sm text-blue-100/70 font-domine uppercase tracking-widest mt-1">Pengelompokan Inventaris</p>
+                <p class="text-sm text-blue-100/70 font-acme uppercase tracking-widest mt-1">Pengelompokan Inventaris</p>
             </div>
             <button onclick="openCategoryModal('add')"
                 class="bg-white hover:bg-blue-100/70 text-blue-700 px-6 py-3 rounded-2xl shadow-lg transition flex items-center gap-2 font-bold text-sm">
@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <h3 class="font-bold text-slate-800 text-lg">{{ $category->name }}</h3>
-                    <p class="text-xs text-slate-400 font-domine mt-1">{{ $category->products_count }} Produk Terkait</p>
+                    <p class="text-xs text-slate-400 font-acme mt-1">{{ $category->products_count }} Produk Terkait</p>
                 </div>
             @empty
                 <div class="col-span-3 bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
@@ -49,7 +49,7 @@
         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all">
             <div class="bg-arindama p-6 text-white flex justify-between items-center">
-                <h3 id="modalTitle" class="font-bold text-lg font-domine">Tambah Kategori</h3>
+                <h3 id="modalTitle" class="font-bold text-lg font-acme">Tambah Kategori</h3>
                 <button onclick="closeModal()" class="text-white/80 hover:text-white"><i
                         class="fa-solid fa-circle-xmark text-xl"></i></button>
             </div>

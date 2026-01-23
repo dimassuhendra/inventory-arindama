@@ -6,7 +6,7 @@
             <div
                 class="bg-white/90 backdrop-blur-md p-6 rounded-[2.5rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-domine">Total Produk</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Total Produk</p>
                     <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $total_products }}</h3>
                     <div
                         class="mt-4 flex items-center text-[10px] font-bold text-blue-600 bg-blue-50 w-max px-2 py-1 rounded-lg">
@@ -20,7 +20,7 @@
             <div
                 class="bg-white/90 backdrop-blur-md p-6 rounded-[2.5rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-domine">Kategori</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Kategori</p>
                     <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $total_categories }}</h3>
                     <div
                         class="mt-4 flex items-center text-[10px] font-bold text-purple-600 bg-purple-50 w-max px-2 py-1 rounded-lg">
@@ -34,7 +34,7 @@
             <div
                 class="bg-white/90 backdrop-blur-md p-6 rounded-[2.5rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-domine">Suppliers</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Suppliers</p>
                     <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $total_suppliers }}</h3>
                     <div
                         class="mt-4 flex items-center text-[10px] font-bold text-orange-600 bg-orange-50 w-max px-2 py-1 rounded-lg">
@@ -48,7 +48,7 @@
             <div
                 class="bg-white/90 backdrop-blur-md p-6 rounded-[2.5rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-domine">Aset Dipinjam</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Aset Dipinjam</p>
 
                     <div class="flex items-baseline gap-2 mt-2">
                         <h3 class="text-3xl font-bold text-amber-600">{{ $total_borrowed_units }}</h3>
@@ -71,7 +71,7 @@
             <div
                 class="bg-red-500 p-6 rounded-[2.5rem] shadow-xl shadow-red-200/50 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10 text-white">
-                    <p class="text-[10px] font-bold opacity-80 uppercase tracking-widest font-domine">Stok Menipis</p>
+                    <p class="text-[10px] font-bold opacity-80 uppercase tracking-widest font-acme">Stok Menipis</p>
                     <h3 class="text-4xl font-bold mt-2">{{ $low_stock }}</h3>
                     <div class="mt-4 flex items-center text-[10px] font-bold bg-white/20 w-max px-2 py-1 rounded-lg italic">
                         <i class="fa-solid fa-triangle-exclamation mr-1"></i> Re-stock
@@ -90,7 +90,7 @@
                     </div>
                     <div>
                         <h3 class="font-bold text-blue-900">Jatuh Tempo Besok</h3>
-                        <p class="text-xs text-gray-400 font-domine">Segera hubungi peminjam</p>
+                        <p class="text-xs text-gray-400 font-acme">Segera hubungi peminjam</p>
                     </div>
                 </div>
 
@@ -100,7 +100,7 @@
                             class="group flex justify-between items-center p-4 bg-amber-50/50 rounded-2xl border border-amber-100 hover:bg-amber-100 transition-all">
                             <div class="text-sm">
                                 <p class="font-bold text-amber-900">{{ $item->borrower_name }}</p>
-                                <p class="text-[10px] text-amber-700 font-domine mt-0.5">{{ $item->product->name }} •
+                                <p class="text-[10px] text-amber-700 font-acme mt-0.5">{{ $item->product->name }} •
                                     {{ $item->quantity }} unit
                                 </p>
                             </div>
@@ -133,7 +133,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-slate-800 line-clamp-1">{{ $entry->product->name }}</p>
-                                    <p class="text-[10px] text-slate-400 font-domine">{{ $entry->created_at->diffForHumans() }}
+                                    <p class="text-[10px] text-slate-400 font-acme">{{ $entry->created_at->diffForHumans() }}
                                     </p>
                                 </div>
                             </div>
@@ -163,7 +163,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-slate-800 line-clamp-1">{{ $exit->product->name }}</p>
-                                    <p class="text-[10px] text-slate-400 font-domine">{{ $exit->created_at->diffForHumans() }}
+                                    <p class="text-[10px] text-slate-400 font-acme">{{ $exit->created_at->diffForHumans() }}
                                     </p>
                                 </div>
                             </div>

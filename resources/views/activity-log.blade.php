@@ -5,7 +5,7 @@
         <div>
             <h2 class="text-2xl font-bold text-white tracking-tight">System Activity Log</h2>
 
-            <p class="text-xs text-blue-100/70 font-domine uppercase tracking-[0.2em] mt-1">
+            <p class="text-xs text-blue-100/70 font-acme uppercase tracking-[0.2em] mt-1">
                 Audit Trail & Perubahan Data
             </p>
         </div>

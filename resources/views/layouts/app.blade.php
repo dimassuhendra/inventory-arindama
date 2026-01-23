@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Arindama Inventory</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Fredoka:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Acme&family=DynaPuff:wght@400..700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -15,7 +15,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { fredoka: ['Fredoka'], domine: ['Domine'] },
+                    fontFamily: { dynapuff: ['DynaPuff'], acme: ['Acme'] },
                     colors: { arindama: '#476EAE' }
                 }
             }
@@ -38,7 +38,7 @@
 
 </head>
 
-<body class="font-fredoka bg-gradient-blue min-h-screen" x-data="{ isSideOpen: false }">
+<body class="font-dynapuff bg-gradient-blue min-h-screen" x-data="{ isSideOpen: false }">
     <div class="flex">
         @include('layouts.sidebar')
 

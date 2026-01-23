@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Fredoka:wght@300;400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=acme:wght@400;700&family=dynapuff:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -24,8 +24,8 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        fredoka: ['Fredoka', 'sans-serif'],
-                        domine: ['Domine', 'serif'],
+                        dynapuff: ['dynapuff', 'sans-serif'],
+                        acme: ['acme', 'serif'],
                     }
                 }
             }
@@ -37,7 +37,7 @@
         }
 
         body {
-            font-family: 'Fredoka', sans-serif;
+            font-family: 'dynapuff', sans-serif;
         }
     </style>
 </head>
@@ -45,28 +45,28 @@
 <body class="bg-gradient-blue h-screen flex items-center justify-center p-4">
 
     <div
-        class="bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row max-w-5xl w-full min-h-[580px] overflow-hidden relative font-fredoka">
+        class="bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row max-w-5xl w-full min-h-[580px] overflow-hidden relative font-dynapuff">
 
         <div class="w-full md:w-5/12 p-10 lg:p-14 z-20 bg-white">
             <div class="mb-10">
                 <h2 class="text-4xl font-bold text-blue-900 mb-2 tracking-wide">Arindama Inventory System</h2>
-                <p class="text-gray-500 font-medium font-domine">Silahkan login untuk masuk ke sistem</p>
+                <p class="text-gray-500 font-medium font-acme">Silahkan login untuk masuk ke sistem</p>
             </div>
 
             <form action="{{ route('login.post') }}" method="POST">
                 @csrf
                 <div class="space-y-6">
                     <div class="relative">
-                        <label class="block text-sm font-bold text-gray-700 mb-1 font-domine">Username / Email</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-1 font-acme">Username / Email</label>
                         <input type="email" name="email"
-                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition font-fredoka"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition font-dynapuff"
                             placeholder="nama@email.com" required>
                     </div>
 
                     <div class="relative">
-                        <label class="block text-sm font-bold text-gray-700 mb-1 font-domine">Password</label>
+                        <label class="block text-sm font-bold text-gray-700 mb-1 font-acme">Password</label>
                         <input type="password" name="password"
-                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition font-fredoka"
+                            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition font-dynapuff"
                             placeholder="••••••••" required>
                     </div>
 
@@ -96,15 +96,15 @@
                         class="w-48 h-auto object-contain">
                 </div>
 
-                <!-- <h3 class="text-3xl font-bold text-blue-900 mb-3 tracking-tight font-fredoka">
+                <!-- <h3 class="text-3xl font-bold text-blue-900 mb-3 tracking-tight font-dynapuff">
                     Arindama Inventory System
                 </h3>
 
                 <div class="space-y-2">
-                    <p class="text-blue-800 font-domine text-lg font-medium">
+                    <p class="text-blue-800 font-acme text-lg font-medium">
                         Teknologi Arindama Andra
                     </p>
-                    <p class="text-blue-600 font-domine opacity-80 max-w-sm mx-auto leading-relaxed text-sm">
+                    <p class="text-blue-600 font-acme opacity-80 max-w-sm mx-auto leading-relaxed text-sm">
                         Solusi cerdas manajemen aset dan inventaris terpadu untuk efisiensi operasional departemen
                         {{ Auth::user()->department ?? 'Umum' }} Anda.
                     </p>
@@ -125,8 +125,8 @@
             <script>
                 Swal.fire({
                     icon: 'error',
-                    title: '<span class="font-fredoka text-2xl text-red-600">Login Gagal!</span>',
-                    html: '<p class="font-domine text-gray-600">{{ session('loginError') }}</p>',
+                    title: '<span class="font-dynapuff text-2xl text-red-600">Login Gagal!</span>',
+                    html: '<p class="font-acme text-gray-600">{{ session('loginError') }}</p>',
                     background: '#ffffff',
                     showConfirmButton: true,
                     confirmButtonText: 'Coba Lagi',
