@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 
-<!DOCTYPE html>
-<html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,7 +46,7 @@
 
         <div class="w-full md:w-5/12 p-10 lg:p-14 z-20 bg-white">
             <div class="mb-10">
-                <h2 class="text-4xl font-bold text-blue-900 mb-2 tracking-wide">Arindama Inventory System</h2>
+                <h2 class="text-4xl font-bold text-blue-900 mb-2 tracking-wide">MYBOLO Inventory System</h2>
                 <p class="text-gray-500 font-medium font-acme">Silahkan login untuk masuk ke sistem</p>
             </div>
 
@@ -89,30 +86,9 @@
 
         <div class="hidden md:flex w-7/12 bg-blue-50 items-center justify-center p-12 relative">
             <div class="text-center z-20">
-
-                <div
-                    class="bg-white px-8 py-4 rounded-2xl shadow-xl flex items-center justify-center mx-auto mb-8 animate-pulse border border-blue-100">
-                    <img src="{{ asset('img/logo-arindama.png') }}" alt="Arindama Andra Logo"
-                        class="w-48 h-auto object-contain">
-                </div>
-
-                <!-- <h3 class="text-3xl font-bold text-blue-900 mb-3 tracking-tight font-dynapuff">
-                    Arindama Inventory System
-                </h3>
-
-                <div class="space-y-2">
-                    <p class="text-blue-800 font-acme text-lg font-medium">
-                        Teknologi Arindama Andra
-                    </p>
-                    <p class="text-blue-600 font-acme opacity-80 max-w-sm mx-auto leading-relaxed text-sm">
-                        Solusi cerdas manajemen aset dan inventaris terpadu untuk efisiensi operasional departemen
-                        {{ Auth::user()->department ?? 'Umum' }} Anda.
-                    </p>
-                </div> -->
-
                 <div class="mt-10">
-                    <img src="{{ asset('img/1.png') }}"
-                        class="w-72 mx-auto drop-shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500"
+                    <img src="{{ asset('img/MYBOLO.png') }}"
+                        class="w-92 mx-auto drop-shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500"
                         alt="Inventory Illustration">
                 </div>
             </div>
@@ -130,7 +106,7 @@
                     background: '#ffffff',
                     showConfirmButton: true,
                     confirmButtonText: 'Coba Lagi',
-                    confirmButtonColor: '#2563eb', // Warna biru-600 (Tailwind)
+                    confirmButtonColor: '#2563eb',
                     showClass: {
                         popup: 'animate__animated animate__fadeInDown'
                     },

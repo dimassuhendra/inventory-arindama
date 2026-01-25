@@ -13,7 +13,7 @@
 
 	<div class="p-8 mb-2">
 		<div class="bg-blue-50/50 px-6 py-4 rounded-2xl flex items-center justify-center border border-blue-100/50">
-			<img src="{{ asset('img/logo-arindama.png') }}" alt="Arindama Logo" class="w-40 h-auto object-contain">
+			<img src="{{ asset('img/logo.png') }}" alt="Arindama Logo" class="w-40 h-auto object-contain">
 		</div>
 	</div>
 

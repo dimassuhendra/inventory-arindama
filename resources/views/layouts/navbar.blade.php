@@ -13,9 +13,11 @@
                 <i class="fa-solid fa-bars-staggered text-sm"></i>
             </button>
 
-            <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-lg shadow-blue-200">
-                <i class="fa-solid fa-house-chimney text-sm"></i>
-            </div>
+            <a href="{{ route('dashboard') }}">
+                <div class="bg-blue-600 text-white p-2.5 rounded-xl shadow-lg shadow-blue-200">
+                    <i class="fa-solid fa-house-chimney text-sm"></i>
+                </div>
+            </a>
             <div>
                 <h1 class="text-lg font-bold text-blue-900 leading-none font-dynapuff">Dashboard</h1>
                 <p class="text-[10px] text-blue-400 font-acme uppercase tracking-widest mt-1 font-bold">Management

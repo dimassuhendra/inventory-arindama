@@ -3,73 +3,57 @@
 @section('content')
     <div class="space-y-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-            <div
-                class="bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
+            <a href="{{ route('products.index') }}" class="block bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:border-blue-400 hover:scale-105 hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Total Produk</p>
                     <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $total_products }}</h3>
-                    <div
-                        class="mt-4 flex items-center text-[10px] font-bold text-blue-600 bg-blue-50 w-max px-2 py-1 rounded-lg">
+                    <div class="mt-4 flex items-center text-[10px] font-bold text-blue-600 bg-blue-50 w-max px-2 py-1 rounded-lg">
                         <i class="fa-solid fa-box mr-1"></i> Data Barang
                     </div>
                 </div>
-                <i
-                    class="fa-solid fa-boxes-stacked absolute -right-4 -bottom-4 text-6xl text-slate-100 group-hover:text-blue-100/50 transition-colors"></i>
-            </div>
+                <i class="fa-solid fa-boxes-stacked absolute -right-4 -bottom-4 text-6xl text-slate-100 group-hover:text-blue-100/50 transition-colors"></i>
+            </a>
 
-            <div
-                class="bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
+            <a href="{{ route('categories.index') }}" class="block bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:border-purple-400 hover:scale-105 hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Kategori</p>
                     <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $total_categories }}</h3>
-                    <div
-                        class="mt-4 flex items-center text-[10px] font-bold text-purple-600 bg-purple-50 w-max px-2 py-1 rounded-lg">
+                    <div class="mt-4 flex items-center text-[10px] font-bold text-purple-600 bg-purple-50 w-max px-2 py-1 rounded-lg">
                         <i class="fa-solid fa-tag mr-1"></i> Klasifikasi
                     </div>
                 </div>
-                <i
-                    class="fa-solid fa-tags absolute -right-4 -bottom-4 text-6xl text-slate-100 group-hover:text-purple-100/50 transition-colors"></i>
-            </div>
+                <i class="fa-solid fa-tags absolute -right-4 -bottom-4 text-6xl text-slate-100 group-hover:text-purple-100/50 transition-colors"></i>
+            </a>
 
-            <div
-                class="bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
+            <a href="{{ route('suppliers.index') }}" class="block bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:border-orange-400 hover:scale-105 hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Suppliers</p>
                     <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $total_suppliers }}</h3>
-                    <div
-                        class="mt-4 flex items-center text-[10px] font-bold text-orange-600 bg-orange-50 w-max px-2 py-1 rounded-lg">
+                    <div class="mt-4 flex items-center text-[10px] font-bold text-orange-600 bg-orange-50 w-max px-2 py-1 rounded-lg">
                         <i class="fa-solid fa-handshake mr-1"></i> Mitra Kerja
                     </div>
                 </div>
-                <i
-                    class="fa-solid fa-truck-ramp-box absolute -right-4 -bottom-4 text-6xl text-slate-100 group-hover:text-orange-100/50 transition-colors"></i>
-            </div>
+                <i class="fa-solid fa-truck-ramp-box absolute -right-4 -bottom-4 text-6xl text-slate-100 group-hover:text-orange-100/50 transition-colors"></i>
+            </a>
 
-            <div
-                class="bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
+            <a href="{{ route('loans.index') }}" class="block bg-white/90 backdrop-blur-md p-6 rounded-[1rem] shadow-xl border border-white/20 hover:border-amber-400 hover:scale-105 hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest font-acme">Aset Dipinjam</p>
-
                     <div class="flex items-baseline gap-2 mt-2">
                         <h3 class="text-3xl font-bold text-amber-600">{{ $total_borrowed_units }}</h3>
                         <span class="text-xs font-bold text-slate-400 uppercase">Unit</span>
                     </div>
-
                     <div class="mt-4 flex flex-col gap-2">
-                        <div
-                            class="flex items-center text-[10px] font-bold text-amber-700 bg-amber-50 w-max px-3 py-1.5 rounded-xl border border-amber-100">
+                        <div class="flex items-center text-[10px] font-bold text-amber-700 bg-amber-50 w-max px-3 py-1.5 rounded-xl border border-amber-100">
                             <i class="fa-solid fa-layer-group mr-1.5"></i>
                             {{ $total_borrowed_types }} Jenis Barang
                         </div>
                     </div>
                 </div>
+                <i class="fa-solid fa-hand-holding-box absolute -right-4 -bottom-4 text-6xl text-slate-100 group-hover:text-amber-100/50 transition-colors"></i>
+            </a>
 
-                <i
-                    class="fa-solid fa-hand-holding-box absolute -right-4 -bottom-4 text-6xl text-slate-100 group-hover:text-amber-100/50 transition-colors"></i>
-            </div>
-
-            <div
-                class="bg-red-500 p-6 rounded-[1rem] shadow-xl shadow-red-200/50 hover:scale-105 transition-all duration-300 relative overflow-hidden group">
+            <a href="{{ route('products.index') }}" class="block bg-red-500 p-6 rounded-[1rem] shadow-xl shadow-red-200/50 border border-transparent hover:border-white hover:scale-105 hover:shadow-2xl transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10 text-white">
                     <p class="text-[10px] font-bold opacity-80 uppercase tracking-widest font-acme">Stok Menipis</p>
                     <h3 class="text-4xl font-bold mt-2">{{ $low_stock }}</h3>
@@ -77,10 +61,9 @@
                         <i class="fa-solid fa-triangle-exclamation mr-1"></i> Re-stock
                     </div>
                 </div>
-                <i
-                    class="fa-solid fa-fire-flame-curved absolute -right-4 -bottom-4 text-7xl text-white/10 group-hover:scale-110 transition-transform"></i>
-            </div>
-        </div>
+                <i class="fa-solid fa-fire-flame-curved absolute -right-4 -bottom-4 text-7xl text-white/10 group-hover:scale-110 transition-transform"></i>
+            </a>
+        </div>    
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="bg-white/90 backdrop-blur-md p-8 rounded-[1rem] shadow-xl border border-amber-100 flex flex-col">

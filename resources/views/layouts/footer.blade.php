@@ -4,7 +4,7 @@
         <div class="flex items-center gap-3">
             <img src="{{ asset('img/logo.png') }}" class="w-8 opacity-20 grayscale">
             <p class="text-xs font-domine">
-                &copy; 2026 <span class="font-bold text-blue-900">Teknologi Arindama Andra</span>.
+                &copy; 2026 <span class="font-bold text-blue-900">MYBOLO INVENTORY SYSTEM</span>.
                 <span class="hidden sm:inline italic text-gray-400 ml-1">Developed for high efficiency.</span>
             </p>
         </div>
