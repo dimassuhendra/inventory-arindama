@@ -2,68 +2,86 @@
 
 @section('content')
     <div class="space-y-6">
-        <div class="flex justify-between items-center">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-                <h2 class="text-2xl font-bold text-white">Kategori Produk</h2>
-                <p class="text-sm text-blue-100/70 font-acme uppercase tracking-widest mt-1">Pengelompokan Inventaris</p>
+                <h2 class="text-2xl lg:text-3xl font-bold text-primary font-serif">Kategori Produk</h2>
+                <p class="text-xs text-secondary font-sans uppercase tracking-widest mt-2 font-semibold">Pengelompokan
+                    Inventaris</p>
             </div>
             <button onclick="openCategoryModal('add')"
-                class="bg-white hover:bg-blue-100/70 text-blue-700 px-6 py-3 rounded-2xl shadow-lg transition flex items-center gap-2 font-bold text-sm">
+                class="bg-primary hover:bg-secondary text-white px-6 py-3.5 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-3 font-bold text-sm tracking-wide">
                 <i class="fa-solid fa-tags"></i> Tambah Kategori
             </button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Grid Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6 font-sans">
             @forelse($categories as $category)
-                <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="w-12 h-12 bg-blue-50 text-arindama rounded-2xl flex items-center justify-center text-xl">
+                <div
+                    class="bg-white p-6 rounded-2xl border border-accent/30 shadow-sm hover:shadow-md hover:border-secondary/50 transition-all group">
+                    <div class="flex justify-between items-start mb-5">
+                        <div
+                            class="w-12 h-12 bg-primary/10 text-primary border border-accent/30 rounded-xl flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
                             <i class="fa-solid fa-folder-open"></i>
                         </div>
-                        <div class="flex gap-1">
-                            <button onclick="openCategoryModal('edit', {{ $category->id }}, '{{ $category->name }}')"
-                                class="p-2 text-amber-500 hover:bg-amber-50 rounded-lg transition">
-                                <i class="fa-solid fa-pen-to-square"></i>
+                        <div
+                            class="flex gap-1 bg-gray-50 rounded-lg p-1 border border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                                onclick="openCategoryModal('edit', {{ $category->id }}, '{{ addslashes($category->name) }}')"
+                                class="p-2 text-amber-500 hover:bg-white hover:shadow-sm rounded-md transition">
+                                <i class="fa-solid fa-pen-to-square text-xs"></i>
                             </button>
                             <form action="{{ route('categories.destroy', $category->id) }}" method="POST">
                                 @csrf @method('DELETE')
-                                <button type="submit" onclick="return confirm('Hapus kategori ini?')"
-                                    class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition">
-                                    <i class="fa-solid fa-trash"></i>
+                                <button type="submit"
+                                    onclick="return confirm('Hapus kategori ini? Semua produk terkait mungkin akan terpengaruh.')"
+                                    class="p-2 text-red-500 hover:bg-white hover:shadow-sm rounded-md transition">
+                                    <i class="fa-solid fa-trash text-xs"></i>
                                 </button>
                             </form>
                         </div>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-lg">{{ $category->name }}</h3>
-                    <p class="text-xs text-slate-400 font-acme mt-1">{{ $category->products_count }} Produk Terkait</p>
+                    <h3 class="font-bold text-gray-800 text-lg mb-1">{{ $category->name }}</h3>
+                    <p class="text-[11px] text-gray-400 font-medium bg-gray-50 px-3 py-1 rounded-full w-fit">
+                        {{ $category->products_count }} Produk Terkait
+                    </p>
                 </div>
             @empty
-                <div class="col-span-3 bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-12 text-center">
-                    <p class="text-slate-400 italic">Belum ada kategori. Silahkan tambah kategori baru.</p>
+                <div
+                    class="col-span-1 md:col-span-3 xl:col-span-4 bg-white border-2 border-dashed border-accent/40 rounded-3xl p-12 text-center">
+                    <p class="text-gray-400 italic">Belum ada kategori. Silahkan tambah kategori baru untuk mengelompokkan
+                        produk.</p>
                 </div>
             @endforelse
         </div>
     </div>
 
+    <!-- Modal Form -->
     <div id="modalCategory"
-        class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all">
-            <div class="bg-arindama p-6 text-white flex justify-between items-center">
-                <h3 id="modalTitle" class="font-bold text-lg font-acme">Tambah Kategori</h3>
-                <button onclick="closeModal()" class="text-white/80 hover:text-white"><i
-                        class="fa-solid fa-circle-xmark text-xl"></i></button>
+        class="fixed inset-0 bg-primary/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div
+            class="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden transform transition-all border border-accent/20">
+            <div class="bg-primary p-6 text-white flex justify-between items-center">
+                <h3 id="modalTitle" class="font-bold text-lg font-serif tracking-wide">Tambah Kategori</h3>
+                <button onclick="closeModal()" class="text-accent hover:text-white transition transform hover:rotate-90">
+                    <i class="fa-solid fa-circle-xmark text-2xl"></i>
+                </button>
             </div>
-            <form id="categoryForm" method="POST" class="p-8 space-y-5">
+
+            <form id="categoryForm" method="POST" class="p-8 space-y-6 font-sans">
                 @csrf
                 <input type="hidden" name="_method" id="formMethod" value="POST">
+
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Nama
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Nama
                         Kategori</label>
-                    <input type="text" name="name" id="cat_name" required placeholder="Misal: Elektronik"
-                        class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-arindama outline-none">
+                    <input type="text" name="name" id="cat_name" required placeholder="Misal: Elektronik IT"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
                 </div>
+
                 <button type="submit"
-                    class="w-full bg-arindama text-white font-bold py-4 rounded-xl shadow-lg uppercase text-[10px] tracking-widest">
+                    class="w-full bg-primary hover:bg-secondary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all uppercase text-xs tracking-widest">
                     Simpan Kategori
                 </button>
             </form>
@@ -90,6 +108,9 @@
                 form.reset();
             }
         }
-        function closeModal() { document.getElementById('modalCategory').classList.add('hidden'); }
+
+        function closeModal() {
+            document.getElementById('modalCategory').classList.add('hidden');
+        }
     </script>
 @endsection
