@@ -3,7 +3,7 @@
 @section('content')
     <div class="space-y-6">
         <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div class="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-4">
             <div>
                 <h2 class="text-2xl lg:text-3xl font-bold text-primary font-serif">Master Produk</h2>
                 <p class="text-xs text-secondary font-sans uppercase tracking-widest mt-2 font-semibold">
@@ -12,110 +12,191 @@
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <button onclick="openImportModal()"
-                    class="bg-amber-500 hover:bg-amber-600 text-white px-5 py-3.5 rounded-xl shadow-md transition-all flex items-center gap-2 font-bold text-sm tracking-wide">
-                    <i class="fa-solid fa-file-import"></i> Import Excel
+                    class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 font-bold text-sm tracking-wide">
+                    <i class="fa-solid fa-file-import"></i> Import
                 </button>
 
                 <a href="{{ route('products.export') }}"
-                    class="bg-secondary hover:bg-accent hover:text-primary text-white px-5 py-3.5 rounded-xl shadow-md transition-all flex items-center gap-2 font-bold text-sm tracking-wide">
-                    <i class="fa-solid fa-file-excel"></i> Ekspor Excel
+                    class="bg-secondary hover:bg-accent hover:text-primary text-white px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 font-bold text-sm tracking-wide">
+                    <i class="fa-solid fa-file-excel"></i> Ekspor
                 </a>
 
                 <button onclick="openModal('add')"
-                    class="bg-primary hover:bg-secondary text-white px-5 py-3.5 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center gap-2 font-bold text-sm tracking-wide">
-                    <i class="fa-solid fa-box-archive"></i> Tambah Produk Baru
+                    class="bg-primary hover:bg-secondary text-white px-5 py-2.5 rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center gap-2 font-bold text-sm tracking-wide">
+                    <i class="fa-solid fa-plus"></i> Tambah Produk
                 </button>
             </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div
+            class="bg-white p-4 rounded-2xl shadow-sm border border-accent/30 flex flex-col md:flex-row justify-between items-center gap-4">
+            <!-- Form Search & View Size -->
+            <form method="GET" action="{{ route('products.index') }}" class="w-full flex flex-col md:flex-row gap-4">
+                <!-- Pertahankan parameter sort saat mencari -->
+                <input type="hidden" name="sort_by" value="{{ request('sort_by', 'created_at') }}">
+                <input type="hidden" name="sort_order" value="{{ request('sort_order', 'desc') }}">
+
+                <!-- Select View Size -->
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gray-500 font-medium">Tampilkan:</span>
+                    <select name="per_page" onchange="this.form.submit()"
+                        class="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-primary focus:border-primary block p-2 outline-none">
+                        <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
+                        <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+                        <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>Semua</option>
+                    </select>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative flex-grow max-w-md">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
+                    </div>
+                    <input type="text" name="search" value="{{ request('search') }}"
+                        class="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-primary focus:border-primary block w-full pl-10 p-2.5 outline-none transition-all"
+                        placeholder="Cari nama produk, kategori, atau supplier...">
+
+                    @if (request('search'))
+                        <a href="{{ route('products.index') }}"
+                            class="absolute inset-y-0 right-0 flex items-center pr-3 text-red-400 hover:text-red-600">
+                            <i class="fa-solid fa-xmark"></i>
+                        </a>
+                    @endif
+                </div>
+
+                <button type="submit"
+                    class="hidden md:block bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-bold transition">
+                    Cari
+                </button>
+            </form>
         </div>
 
         <!-- Table Card -->
         <div class="bg-white rounded-2xl shadow-sm border border-accent/30 overflow-hidden">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-primary/5 border-b border-accent/20">
-                    <tr>
-                        <th class="px-6 py-4 text-[10px] font-bold text-primary uppercase tracking-widest">Info Produk</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-primary uppercase tracking-widest">Kategori &
-                            Supplier</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-primary uppercase tracking-widest text-center">Stok
-                            & Unit</th>
-                        <th class="px-6 py-4 text-[10px] font-bold text-primary uppercase tracking-widest text-center">Aksi
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-50 font-sans">
-                    @forelse($products as $product)
-                        <tr class="hover:bg-primary/5 transition duration-200">
-                            <td class="px-6 py-4 flex items-center gap-4">
-                                <div
-                                    class="w-12 h-12 rounded-2xl bg-background border border-accent/30 overflow-hidden shadow-sm flex-shrink-0">
-                                    <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://ui-avatars.com/api/?name=' . urlencode($product->name) . '&background=F2EDC2&color=346739&bold=true' }}"
-                                        class="w-full h-full object-cover">
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold text-gray-800 line-clamp-1">{{ $product->name }}</p>
-                                    <p class="text-[10px] text-gray-400 font-mono italic mt-0.5">{{ $product->slug }}</p>
-                                </div>
-                            </td>
-
-                            <td class="px-6 py-4">
-                                <div class="flex flex-col gap-1.5">
-                                    <span
-                                        class="text-[9px] font-bold text-primary bg-accent/30 border border-accent/50 px-2.5 py-1 rounded-md w-fit uppercase tracking-wider">
-                                        {{ $product->category->name }}
-                                    </span>
-                                    <span class="text-[10px] text-gray-500 flex items-center gap-1 font-medium">
-                                        <i class="fa-solid fa-truck-fast text-secondary"></i>
-                                        {{ $product->supplier->name ?? 'Supplier Belum Tersedia' }}
-                                    </span>
-                                </div>
-                            </td>
-
-                            <td class="px-6 py-4 text-center">
-                                <p
-                                    class="text-sm font-bold {{ $product->quantity <= 5 ? 'text-red-500 animate-pulse' : 'text-gray-800' }}">
-                                    {{ number_format($product->quantity, 0) }}
-                                </p>
-                                <p class="text-[10px] text-gray-400 uppercase font-semibold mt-0.5">{{ $product->unit }}</p>
-                            </td>
-
-                            <td class="px-6 py-4">
-                                <div class="flex justify-center gap-2">
-                                    <button
-                                        onclick="openModal('edit', {{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->quantity }}, {{ $product->category_id }}, '{{ $product->supplier_id ?? '' }}', '{{ $product->unit }}', '{{ addslashes($product->description) }}')"
-                                        class="w-9 h-9 rounded-xl bg-amber-50 text-amber-500 hover:bg-amber-500 hover:text-white transition flex items-center justify-center shadow-sm">
-                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
-                                    </button>
-                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST"
-                                        onsubmit="return confirm('Hapus produk ini secara permanen?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit"
-                                            class="w-9 h-9 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition flex items-center justify-center shadow-sm">
-                                            <i class="fa-solid fa-trash-can text-xs"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse min-w-max">
+                    <thead class="bg-primary/5 border-b border-accent/20">
                         <tr>
-                            <td colspan="4" class="px-6 py-16 text-center">
-                                <div class="flex flex-col items-center">
-                                    <i class="fa-solid fa-box-open text-4xl text-accent mb-4"></i>
-                                    <p class="text-gray-400 italic text-sm">Belum ada data produk yang terdaftar.</p>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                            <!-- Helper Sort Link Generator -->
+                            @php
+                                function sortLink($column, $label)
+                                {
+                                    $currentCol = request('sort_by', 'created_at');
+                                    $currentOrd = request('sort_order', 'desc');
+                                    $newOrd = $currentCol == $column && $currentOrd == 'asc' ? 'desc' : 'asc';
 
-            <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
-                {{ $products->links() }}
+                                    $icon = 'fa-sort text-gray-300';
+                                    if ($currentCol == $column) {
+                                        $icon =
+                                            $currentOrd == 'asc'
+                                                ? 'fa-sort-up text-primary'
+                                                : 'fa-sort-down text-primary';
+                                    }
+
+                                    $url = request()->fullUrlWithQuery(['sort_by' => $column, 'sort_order' => $newOrd]);
+
+                                    return "<a href='{$url}' class='flex items-center gap-1 hover:text-secondary transition'>{$label} <i class='fa-solid {$icon}'></i></a>";
+                                }
+                            @endphp
+
+                            <th
+                                class="px-6 py-4 text-[10px] font-bold text-primary uppercase tracking-widest whitespace-nowrap">
+                                {!! sortLink('name', 'Info Produk') !!}
+                            </th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-primary uppercase tracking-widest">Kategori &
+                                Supplier</th>
+                            <th
+                                class="px-6 py-4 text-[10px] font-bold text-primary uppercase tracking-widest text-center whitespace-nowrap justify-center flex">
+                                {!! sortLink('quantity', 'Stok & Unit') !!}
+                            </th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-primary uppercase tracking-widest text-center">
+                                Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50 font-sans">
+                        @forelse($products as $product)
+                            <tr class="hover:bg-primary/5 transition duration-200">
+                                <td class="px-6 py-4 flex items-center gap-4">
+                                    <div
+                                        class="w-12 h-12 rounded-2xl bg-background border border-accent/30 overflow-hidden shadow-sm flex-shrink-0">
+                                        <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://ui-avatars.com/api/?name=' . urlencode($product->name) . '&background=F2EDC2&color=346739&bold=true' }}"
+                                            class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-800 line-clamp-1">{{ $product->name }}</p>
+                                        <p class="text-[10px] text-gray-400 font-mono italic mt-0.5">{{ $product->slug }}
+                                        </p>
+                                    </div>
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    <div class="flex flex-col gap-1.5">
+                                        <span
+                                            class="text-[9px] font-bold text-primary bg-accent/30 border border-accent/50 px-2.5 py-1 rounded-md w-fit uppercase tracking-wider">
+                                            {{ $product->category->name }}
+                                        </span>
+                                        <span class="text-[10px] text-gray-500 flex items-center gap-1 font-medium">
+                                            <i class="fa-solid fa-truck-fast text-secondary"></i>
+                                            {{ $product->supplier->name ?? 'Supplier Belum Tersedia' }}
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="px-6 py-4 text-center">
+                                    <p
+                                        class="text-sm font-bold {{ $product->quantity <= 5 ? 'text-red-500 animate-pulse' : 'text-gray-800' }}">
+                                        {{ number_format($product->quantity, 0) }}
+                                    </p>
+                                    <p class="text-[10px] text-gray-400 uppercase font-semibold mt-0.5">
+                                        {{ $product->unit }}</p>
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    <div class="flex justify-center gap-2">
+                                        <button
+                                            onclick="openModal('edit', {{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->quantity }}, {{ $product->category_id }}, '{{ $product->supplier_id ?? '' }}', '{{ $product->unit }}', '{{ addslashes($product->description) }}')"
+                                            class="w-9 h-9 rounded-xl bg-amber-50 text-amber-500 hover:bg-amber-500 hover:text-white transition flex items-center justify-center shadow-sm">
+                                            <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                        </button>
+                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                                            onsubmit="return confirm('Hapus produk ini secara permanen?')">
+                                            @csrf @method('DELETE')
+                                            <button type="submit"
+                                                class="w-9 h-9 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition flex items-center justify-center shadow-sm">
+                                                <i class="fa-solid fa-trash-can text-xs"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-6 py-16 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fa-solid fa-box-open text-4xl text-accent mb-4"></i>
+                                        <p class="text-gray-400 italic text-sm">
+                                            {{ request('search') ? 'Pencarian tidak ditemukan.' : 'Belum ada data produk yang terdaftar.' }}
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
+
+            <!-- Tampilkan Pagination KECUALI jika view 'all' -->
+            @if (request('per_page') != 'all')
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-100">
+                    {{ $products->links() }}
+                </div>
+            @endif
         </div>
     </div>
 
-    <!-- Modal Form -->
+    <!-- Modal Form (Sama persis seperti sebelumnya) -->
     <div id="modalProduct"
         class="fixed inset-0 bg-primary/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div
@@ -210,7 +291,7 @@
         </div>
     </div>
 
-    <!-- Modal Import Excel -->
+    <!-- Modal Import Excel (Sama persis seperti sebelumnya) -->
     <div id="modalImport"
         class="fixed inset-0 bg-primary/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div
@@ -231,7 +312,6 @@
             <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data"
                 class="p-8 space-y-5 font-sans">
                 @csrf
-
                 <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
                     <p class="text-xs text-amber-700 font-medium mb-3">Gunakan template Excel yang telah disediakan untuk
                         memastikan format data terbaca oleh sistem.</p>
@@ -240,14 +320,12 @@
                         <i class="fa-solid fa-download"></i> Unduh Template Excel
                     </a>
                 </div>
-
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Upload File
                         Excel <span class="text-red-500">*</span></label>
                     <input type="file" name="file_excel" required accept=".xlsx, .xls, .csv"
                         class="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 transition-all border border-gray-200 rounded-xl cursor-pointer">
                 </div>
-
                 <button type="submit"
                     class="w-full bg-amber-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-amber-500/30 hover:bg-amber-600 transition-all uppercase text-xs tracking-widest flex items-center justify-center gap-2 mt-4">
                     <i class="fa-solid fa-cloud-arrow-up"></i> Mulai Proses Import
@@ -256,7 +334,7 @@
         </div>
     </div>
 
-    <!-- Scripts remain largely identical with minor SweetAlert color tweaks -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         @if (session('success'))
@@ -270,7 +348,6 @@
                 borderRadius: '20px'
             });
         @endif
-
         @if (session('error') || $errors->any())
             Swal.fire({
                 icon: 'error',
@@ -294,34 +371,24 @@
                 title.innerText = 'Perbarui Data Produk';
                 form.action = `/products/${id}`;
                 method.value = 'PUT';
-
                 document.getElementById('prod_name').value = name;
                 document.getElementById('prod_category').value = catId;
                 document.getElementById('prod_supplier').value = supId ? supId : "";
                 document.getElementById('prod_unit').value = unit;
                 document.getElementById('prod_desc').value = desc;
                 document.getElementById('prod_qty').value = qty;
-
                 qtySection.classList.remove('hidden');
             } else {
                 title.innerText = 'Pendaftaran Produk Baru';
                 form.action = "{{ route('products.store') }}";
                 method.value = 'POST';
                 form.reset();
-
                 qtySection.classList.add('hidden');
             }
         }
 
         function closeModal() {
             document.getElementById('modalProduct').classList.add('hidden');
-        }
-
-        window.onclick = function(event) {
-            const modal = document.getElementById('modalProduct');
-            if (event.target == modal) {
-                closeModal();
-            }
         }
 
         function openImportModal() {
@@ -332,17 +399,11 @@
             document.getElementById('modalImport').classList.add('hidden');
         }
 
-        // Update fungsi window.onclick untuk mendeteksi penutupan modal import saat background diklik
         window.onclick = function(event) {
             const modalProduct = document.getElementById('modalProduct');
             const modalImport = document.getElementById('modalImport');
-
-            if (event.target == modalProduct) {
-                closeModal();
-            }
-            if (event.target == modalImport) {
-                closeImportModal();
-            }
+            if (event.target == modalProduct) closeModal();
+            if (event.target == modalImport) closeImportModal();
         }
     </script>
 @endsection

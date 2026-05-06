@@ -16,11 +16,47 @@ use App\Exports\ProductTemplateExport;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Products::with(['category', 'supplier'])
-            ->latest()
-            ->paginate(10);
+        // 1. Ambil parameter dari URL (dengan nilai default)
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 10);
+        $sortBy = $request->input('sort_by', 'created_at');
+        $sortOrder = $request->input('sort_order', 'desc');
+
+        // 2. Mulai Query
+        $query = Products::with(['category', 'supplier']);
+
+        // 3. Logika Pencarian (Search)
+        if ($search) {
+            $query
+                ->where('name', 'like', "%{$search}%")
+                ->orWhere('slug', 'like', "%{$search}%")
+                ->orWhereHas('category', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })
+                ->orWhereHas('supplier', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+        }
+
+        // 4. Logika Pengurutan (Sort)
+        // Jika sort berdasarkan kategori/supplier (relasi), butuh join khusus.
+        // Untuk amannya kita urutkan yang ada di tabel products saja.
+        $allowedSorts = ['name', 'quantity', 'created_at'];
+        if (in_array($sortBy, $allowedSorts)) {
+            $query->orderBy($sortBy, $sortOrder);
+        } else {
+            $query->latest(); // Default
+        }
+
+        // 5. Eksekusi Paginasi
+        // Jika user pilih 'all', kita beri angka yang sangat besar
+        $limit = $perPage === 'all' ? 10000 : (int) $perPage;
+
+        // append() agar parameter search/sort tidak hilang saat pindah halaman
+        $products = $query->paginate($limit)->appends($request->all());
+
         $categories = Category::orderBy('name', 'asc')->get();
         $suppliers = Suppliers::orderBy('name', 'asc')->get();
 
