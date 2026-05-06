@@ -119,15 +119,15 @@
                     :class="open ? 'rotate-0' : '-rotate-90'"></i>
             </button>
             <ul x-show="open" x-collapse class="space-y-1 mt-1">
-                <li>
+                {{-- <li>
                     <a href="#"
                         class="flex items-center px-4 py-3 rounded-xl group transition-all duration-200 text-background/70 hover:text-white hover:bg-white/10">
                         <i class="fa-solid fa-chart-pie w-6 text-[1.1rem]"></i>
                         <span class="ml-3 text-sm font-medium">Laporan Stok</span>
                     </a>
-                </li>
+                </li> --}}
                 <li>
-                    <a href="#"
+                    <a href="{{ route('users.index') }}"
                         class="flex items-center px-4 py-3 rounded-xl group transition-all duration-200 text-background/70 hover:text-white hover:bg-white/10">
                         <i class="fa-solid fa-users-gear w-6 text-[1.1rem]"></i>
                         <span class="ml-3 text-sm font-medium">Manajemen Pengguna</span>

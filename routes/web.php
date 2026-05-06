@@ -13,6 +13,7 @@ use App\Http\Controllers\CartRequestController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -48,5 +49,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('products', ProductController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('suppliers', SupplierController::class);
+    Route::resource('users', UserController::class);
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
