@@ -8,14 +8,19 @@ use App\Models\Suppliers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use App\Exports\ProductsExport;
+
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductsExport;
+use App\Imports\ProductsImport;
+use App\Exports\ProductTemplateExport;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $products = Products::with(['category', 'supplier'])->latest()->paginate(10);
+        $products = Products::with(['category', 'supplier'])
+            ->latest()
+            ->paginate(10);
         $categories = Category::orderBy('name', 'asc')->get();
         $suppliers = Suppliers::orderBy('name', 'asc')->get();
 
@@ -45,7 +50,9 @@ class ProductController extends Controller
             Products::create($data);
             return redirect()->back()->with('success', 'Produk berhasil disimpan.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
 
@@ -65,8 +72,9 @@ class ProductController extends Controller
         $data['slug'] = Str::slug($request->name);
 
         if ($request->hasFile('image')) {
-            if ($product->image)
+            if ($product->image) {
                 Storage::disk('public')->delete($product->image);
+            }
             $data['image'] = $request->file('image')->store('products', 'public');
         }
 
@@ -84,6 +92,34 @@ class ProductController extends Controller
     // Tambahkan method ini di dalam class
     public function export()
     {
-        return Excel::download(new ProductsExport, 'Laporan-Stok-Arindama-' . date('d-M-Y') . '.xlsx');
+        return Excel::download(new ProductsExport(), 'Laporan-Stok-Arindama-' . date('d-M-Y') . '.xlsx');
+    }
+
+    // Method untuk mengunduh template Excel
+    public function template()
+    {
+        return Excel::download(new ProductTemplateExport(), 'Template-Import-Produk.xlsx');
+    }
+
+    // Method untuk memproses upload Excel
+    public function import(Request $request)
+    {
+        $request->validate(
+            [
+                'file_excel' => 'required|mimes:xlsx,xls,csv|max:2048',
+            ],
+            [
+                'file_excel.required' => 'File Excel tidak boleh kosong!',
+                'file_excel.mimes' => 'Format file harus .xlsx, .xls, atau .csv',
+                'file_excel.max' => 'Ukuran file maksimal 2MB!',
+            ],
+        );
+
+        try {
+            Excel::import(new ProductsImport(), $request->file('file_excel'));
+            return redirect()->back()->with('success', 'Data produk dari Excel berhasil diimpor!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mengimpor file: Pastikan ID Kategori valid dan format Excel sesuai template.');
+        }
     }
 }
