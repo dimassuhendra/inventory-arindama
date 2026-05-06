@@ -259,12 +259,13 @@
                         <input type="text" name="unit" id="prod_unit" required placeholder="Pcs / Box / Unit"
                             class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
                     </div>
-                    <div id="qtySection" class="hidden">
-                        <label
-                            class="block text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-2 italic">Koreksi
-                            Stok Manual</label>
-                        <input type="number" name="quantity" id="prod_qty" step="0.01"
-                            class="w-full bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-400 outline-none transition-all">
+                    <div id="qtySection">
+                        <label id="qtyLabel"
+                            class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+                            Stok Awal (Opsional)
+                        </label>
+                        <input type="number" name="quantity" id="prod_qty" step="0.01" placeholder="0"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
                     </div>
                 </div>
 
@@ -363,7 +364,10 @@
             const form = document.getElementById('productForm');
             const method = document.getElementById('formMethod');
             const title = document.getElementById('modalTitle');
-            const qtySection = document.getElementById('qtySection');
+
+            // Ambil elemen label dan input qty untuk manipulasi styling
+            const qtyLabel = document.getElementById('qtyLabel');
+            const prodQty = document.getElementById('prod_qty');
 
             modal.classList.remove('hidden');
 
@@ -371,19 +375,32 @@
                 title.innerText = 'Perbarui Data Produk';
                 form.action = `/products/${id}`;
                 method.value = 'PUT';
+
                 document.getElementById('prod_name').value = name;
                 document.getElementById('prod_category').value = catId;
                 document.getElementById('prod_supplier').value = supId ? supId : "";
                 document.getElementById('prod_unit').value = unit;
                 document.getElementById('prod_desc').value = desc;
-                document.getElementById('prod_qty').value = qty;
-                qtySection.classList.remove('hidden');
+
+                // Mode Edit: Styling warna Amber untuk Koreksi Stok
+                qtyLabel.innerText = 'Koreksi Stok Manual';
+                qtyLabel.className = 'block text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-2 italic';
+                prodQty.className =
+                    'w-full bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-400 outline-none transition-all';
+                prodQty.value = qty;
+
             } else {
                 title.innerText = 'Pendaftaran Produk Baru';
                 form.action = "{{ route('products.store') }}";
                 method.value = 'POST';
                 form.reset();
-                qtySection.classList.add('hidden');
+
+                // Mode Tambah: Styling Normal untuk Stok Awal Opsional
+                qtyLabel.innerText = 'Stok Awal (Opsional)';
+                qtyLabel.className = 'block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2';
+                prodQty.className =
+                    'w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all';
+                prodQty.value = ''; // Kosongkan, biarkan user mengisi jika mau
             }
         }
 

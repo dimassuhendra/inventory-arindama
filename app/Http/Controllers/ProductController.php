@@ -77,8 +77,8 @@ class ProductController extends Controller
         try {
             $data = $request->all();
             $data['slug'] = Str::slug($request->name) . '-' . Str::random(5);
-            $data['quantity'] = 0;
-
+            $data['quantity'] = $request->filled('quantity') ? $request->quantity : 0;
+            
             if ($request->hasFile('image')) {
                 $data['image'] = $request->file('image')->store('products', 'public');
             }
