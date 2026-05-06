@@ -13,6 +13,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProductsExport;
 use App\Imports\ProductsImport;
 use App\Exports\ProductTemplateExport;
+use App\Exports\ProductsBulkEditExport;
+use App\Imports\ProductsBulkEditImport;
 
 class ProductController extends Controller
 {
@@ -78,7 +80,7 @@ class ProductController extends Controller
             $data = $request->all();
             $data['slug'] = Str::slug($request->name) . '-' . Str::random(5);
             $data['quantity'] = $request->filled('quantity') ? $request->quantity : 0;
-            
+
             if ($request->hasFile('image')) {
                 $data['image'] = $request->file('image')->store('products', 'public');
             }
@@ -156,6 +158,29 @@ class ProductController extends Controller
             return redirect()->back()->with('success', 'Data produk dari Excel berhasil diimpor!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal mengimpor file: Pastikan ID Kategori valid dan format Excel sesuai template.');
+        }
+    }
+
+    // Unduh file untuk diedit
+    public function exportForEdit()
+    {
+        return Excel::download(new ProductsBulkEditExport(), 'Sinkronisasi-Data-Produk.xlsx');
+    }
+
+    // Proses unggah kembali file yang sudah diedit
+    public function importEdit(Request $request)
+    {
+        $request->validate([
+            'file_excel_edit' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ], [
+            'file_excel_edit.required' => 'File Excel tidak boleh kosong!',
+        ]);
+
+        try {
+            Excel::import(new ProductsBulkEditImport(), $request->file('file_excel_edit'));
+            return redirect()->back()->with('success', 'Pembaruan massal produk berhasil diproses!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memperbarui data: Pastikan kolom ID Produk tidak dihapus atau diubah formatnya.');
         }
     }
 }

@@ -11,6 +11,11 @@
                 </p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
+                <button onclick="openSyncModal()"
+                    class="bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 font-bold text-sm tracking-wide">
+                    <i class="fa-solid fa-rotate"></i> Sinkronisasi Data
+                </button>
+
                 <button onclick="openImportModal()"
                     class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2.5 rounded-xl shadow-sm transition-all flex items-center gap-2 font-bold text-sm tracking-wide">
                     <i class="fa-solid fa-file-import"></i> Import
@@ -335,6 +340,53 @@
         </div>
     </div>
 
+    <!-- Modal Sinkronisasi Data Master -->
+    <div id="modalSyncData"
+        class="fixed inset-0 bg-primary/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div
+            class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-accent/20">
+            <div class="bg-cyan-500 p-6 text-white flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-rotate text-lg"></i>
+                    </div>
+                    <h3 class="font-bold text-lg font-serif tracking-wide">Sinkronisasi Data Master</h3>
+                </div>
+                <button onclick="closeSyncModal()"
+                    class="text-white/80 hover:text-white transition-all transform hover:rotate-90">
+                    <i class="fa-solid fa-circle-xmark text-2xl"></i>
+                </button>
+            </div>
+
+            <form action="{{ route('products.import-edit') }}" method="POST" enctype="multipart/form-data"
+                class="p-8 space-y-5 font-sans">
+                @csrf
+
+                <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-5 text-center">
+                    <h4 class="text-cyan-800 font-bold text-sm mb-1">Tahap 1: Ekstraksi Data</h4>
+                    <p class="text-[11px] text-cyan-700 font-medium mb-3">Unduh dokumen inventaris saat ini. Lakukan
+                        penyesuaian nilai secara luring (offline) tanpa mengubah kolom ID Produk.</p>
+                    <a href="{{ route('products.export-edit') }}"
+                        class="inline-flex items-center gap-2 bg-white text-cyan-600 border border-cyan-300 hover:bg-cyan-500 hover:text-white font-bold py-2.5 px-5 rounded-lg text-[11px] uppercase tracking-wider transition-all shadow-sm">
+                        <i class="fa-solid fa-download"></i> Unduh Dokumen Master
+                    </a>
+                </div>
+
+                <div class="pt-2">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Tahap 2: Unggah
+                        Penyesuaian <span class="text-red-500">*</span></label>
+                    <input type="file" name="file_excel_edit" required accept=".xlsx, .xls, .csv"
+                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-bold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 transition-all border border-gray-200 rounded-xl cursor-pointer focus:ring-2 focus:ring-cyan-500">
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-cyan-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-cyan-500/30 hover:bg-cyan-600 transition-all uppercase text-xs tracking-widest flex items-center justify-center gap-2 mt-4">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Jalankan Sinkronisasi
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -416,11 +468,22 @@
             document.getElementById('modalImport').classList.add('hidden');
         }
 
+        function openSyncModal() {
+            document.getElementById('modalSyncData').classList.remove('hidden');
+        }
+
+        function closeSyncModal() {
+            document.getElementById('modalSyncData').classList.add('hidden');
+        }
+
         window.onclick = function(event) {
             const modalProduct = document.getElementById('modalProduct');
             const modalImport = document.getElementById('modalImport');
+            const modalSync = document.getElementById('modalSyncData'); 
+
             if (event.target == modalProduct) closeModal();
             if (event.target == modalImport) closeImportModal();
+            if (event.target == modalSync) closeSyncModal(); 
         }
     </script>
 @endsection
