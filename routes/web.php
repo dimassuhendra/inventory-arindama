@@ -45,12 +45,14 @@ Route::middleware('auth')->group(function () {
     // Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     // Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     // Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    
     Route::get('/products/template', [ProductController::class, 'template'])->name('products.template');
     Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
     Route::get('/products/export', [ProductController::class, 'export'])->name('products.export');
     Route::get('/products/export-edit', [ProductController::class, 'exportForEdit'])->name('products.export-edit');
     Route::post('/products/import-edit', [ProductController::class, 'importEdit'])->name('products.import-edit');
     Route::resource('products', ProductController::class);
+
     Route::resource('categories', CategoryController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('users', UserController::class);
