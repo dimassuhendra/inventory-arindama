@@ -160,11 +160,22 @@
 
                                 <td class="px-6 py-4">
                                     <div class="flex justify-center gap-2">
+                                        <!-- Tombol Detail / QR -->
+                                        <button
+                                            onclick="openDetailModal('{{ addslashes($product->name) }}', '{{ $product->slug }}', '{{ $product->category->name }}', '{{ $product->supplier->name ?? 'Supplier Belum Tersedia' }}', '{{ number_format($product->quantity, 0) }} {{ $product->unit }}', '{{ addslashes($product->description) }}', '{{ $product->image ? asset('storage/' . $product->image) : '' }}')"
+                                            class="w-9 h-9 rounded-xl bg-cyan-500 text-white hover:bg-cyan-600 transition flex items-center justify-center shadow-sm"
+                                            title="Lihat Detail & QR">
+                                            <i class="fa-solid fa-eye text-xs"></i>
+                                        </button>
+
+                                        <!-- Tombol Edit -->
                                         <button
                                             onclick="openModal('edit', {{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->quantity }}, {{ $product->category_id }}, '{{ $product->supplier_id ?? '' }}', '{{ $product->unit }}', '{{ addslashes($product->description) }}')"
                                             class="w-9 h-9 rounded-xl bg-amber-50 text-amber-500 hover:bg-amber-500 hover:text-white transition flex items-center justify-center shadow-sm">
                                             <i class="fa-solid fa-pen-to-square text-xs"></i>
                                         </button>
+
+                                        <!-- Tombol Hapus -->
                                         <form action="{{ route('products.destroy', $product->id) }}" method="POST"
                                             onsubmit="return confirm('Hapus produk ini secara permanen?')">
                                             @csrf @method('DELETE')
@@ -198,6 +209,66 @@
                     {{ $products->links() }}
                 </div>
             @endif
+        </div>
+    </div>
+
+    <!-- Modal Detail Produk & QR Code -->
+    <div id="modalDetailProduct"
+        class="fixed inset-0 bg-primary/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div
+            class="bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all border border-accent/20">
+            <div class="bg-primary p-6 text-white flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-qrcode text-lg"></i>
+                    </div>
+                    <h3 class="font-bold text-lg font-serif tracking-wide">Detail & QR Code Produk</h3>
+                </div>
+                <button onclick="closeDetailModal()"
+                    class="text-white/80 hover:text-white transition-all transform hover:rotate-90">
+                    <i class="fa-solid fa-circle-xmark text-2xl"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-6 max-h-[75vh] overflow-y-auto font-sans">
+                <!-- Bagian Kartu QR Code (Siap di-download) -->
+                <div id="qrPrintArea"
+                    class="bg-gray-50 border border-gray-200 rounded-2xl p-5 text-center flex flex-col items-center">
+                    <div id="qrcode" class="p-3 bg-white rounded-xl shadow-sm border border-gray-100 mb-3"></div>
+                    <p id="detail_name_qr" class="font-bold text-gray-800 text-sm mb-0.5"></p>
+                    <p id="detail_slug_qr" class="text-[10px] text-gray-400 font-mono"></p>
+                    <p class="text-[9px] text-gray-400 mt-2 italic">Scan QR ini untuk melihat informasi publik</p>
+                </div>
+
+                <button onclick="downloadQR()"
+                    class="w-full bg-secondary text-white border border-secondary hover:text-primary hover:bg-accent font-bold py-2.5 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i> Unduh Gambar QR Code
+                </button>
+
+                <!-- Informasi Ringkas internal -->
+                <div class="space-y-3 pt-2">
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <span class="text-[10px] text-gray-400 font-bold block uppercase">Kategori</span>
+                            <span id="detail_category" class="font-semibold text-gray-700"></span>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <span class="text-[10px] text-gray-400 font-bold block uppercase">Stok & Unit</span>
+                            <span id="detail_stock" class="font-semibold text-emerald-600"></span>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 text-xs">
+                        <span class="text-[10px] text-gray-400 font-bold block uppercase">Supplier Utama</span>
+                        <span id="detail_supplier" class="font-semibold text-gray-700"></span>
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 text-xs">
+                        <span class="text-[10px] text-gray-400 font-bold block uppercase mb-1">Deskripsi</span>
+                        <p id="detail_desc" class="text-gray-600 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -411,6 +482,56 @@
             });
         @endif
 
+        let qrcodeObj = null;
+
+        function openDetailModal(name, slug, category, supplier, stock, desc, image) {
+            document.getElementById('modalDetailProduct').classList.remove('hidden');
+
+            document.getElementById('detail_name_qr').innerText = name;
+            document.getElementById('detail_slug_qr').innerText = slug;
+            document.getElementById('detail_category').innerText = category;
+            document.getElementById('detail_supplier').innerText = supplier;
+            document.getElementById('detail_stock').innerText = stock;
+            document.getElementById('detail_desc').innerText = desc;
+
+            // Generasi URL Publik untuk QR
+            const publicUrl = `${window.location.origin}/p/${slug}`;
+
+            // Reset container QR Code
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+
+            // Generate QR Code baru
+            qrcodeObj = new QRCode(qrContainer, {
+                text: publicUrl,
+                width: 140,
+                height: 140,
+                colorDark: "#1e293b",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        function closeDetailModal() {
+            document.getElementById('modalDetailProduct').classList.add('hidden');
+        }
+
+        function downloadQR() {
+            const qrImage = document.querySelector('#qrcode img');
+            if (!qrImage) {
+                alert('QR Code belum siap untuk diunduh.');
+                return;
+            }
+
+            const name = document.getElementById('detail_name_qr').innerText;
+            const link = document.createElement('a');
+            link.href = qrImage.src;
+            link.download = `QR-${name.replace(/[^a-zA-Z0-9]/g, '_')}.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
         function openModal(mode, id = null, name = '', qty = 0, catId = '', supId = '', unit = '', desc = '') {
             const modal = document.getElementById('modalProduct');
             const form = document.getElementById('productForm');
@@ -479,11 +600,15 @@
         window.onclick = function(event) {
             const modalProduct = document.getElementById('modalProduct');
             const modalImport = document.getElementById('modalImport');
-            const modalSync = document.getElementById('modalSyncData'); 
+            const modalSync = document.getElementById('modalSyncData');
+            const modalDetail = document.getElementById('modalDetailProduct');
 
             if (event.target == modalProduct) closeModal();
             if (event.target == modalImport) closeImportModal();
-            if (event.target == modalSync) closeSyncModal(); 
+            if (event.target == modalSync) closeSyncModal();
+            if (event.target == modalDetail) closeDetailModal();
         }
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 @endsection

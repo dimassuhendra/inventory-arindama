@@ -183,4 +183,23 @@ class ProductController extends Controller
             return redirect()->back()->with('error', 'Gagal memperbarui data: Pastikan kolom ID Produk tidak dihapus atau diubah formatnya.');
         }
     }
+
+    public function publicShow($slug)
+    {
+        $product = Products::with(['category', 'supplier'])->where('slug', $slug)->firstOrFail();
+
+        $supplierName = $product->supplier->name ?? 'Tidak Ada Supplier';
+        $maskedSupplier = $supplierName;
+
+        if ($product->supplier && strlen($supplierName) > 6) {
+            $firstThree = substr($supplierName, 0, 3);
+            $lastThree = substr($supplierName, -3);
+            $maskedLen = strlen($supplierName) - 6;
+            $maskedSupplier = $firstThree . str_repeat('*', $maskedLen) . $lastThree;
+        } elseif ($product->supplier) {
+            $maskedSupplier = substr($supplierName, 0, 2) . '***';
+        }
+
+        return view('products_public', compact('product', 'maskedSupplier'));
+    }
 }
