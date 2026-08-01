@@ -50,7 +50,7 @@
         </div>
 
         <div class="p-4 bg-gray-50 border-t border-gray-100 text-center">
-            <p class="text-[10px] text-gray-400 font-medium">Sistem Inventaris - Informasi Publik</p>
+            <p class="text-[10px] text-gray-400 font-medium">Mybolo Inventory</p>
         </div>
     </div>
 </body>
