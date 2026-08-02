@@ -41,6 +41,38 @@
                 </div>
             </div>
 
+            <div
+                class="bg-emerald-50/60 border border-emerald-100 p-4 rounded-2xl flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+                        <i class="fa-solid fa-calendar-check text-base"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">Mulai
+                            Digunakan</span>
+                        <span class="text-xs font-bold text-gray-800">
+                            @if ($product->first_used_at)
+                                {{ \Carbon\Carbon::parse($product->first_used_at)->format('d M Y') }}
+                            @else
+                                Belum Digunakan
+                            @endif
+                        </span>
+                    </div>
+                </div>
+
+                @if ($usageAge)
+                    <div class="text-right flex-shrink-0">
+                        <span class="text-[9px] font-bold text-emerald-700 uppercase tracking-wider block">Masa
+                            Pakai</span>
+                        <span
+                            class="text-xs font-bold text-emerald-700 bg-white px-2.5 py-1 rounded-lg border border-emerald-200 inline-block mt-0.5 shadow-xs">
+                            {{ $usageAge }}
+                        </span>
+                    </div>
+                @endif
+            </div>
+
             <div class="pt-2">
                 <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Deskripsi</span>
                 <p class="text-sm text-gray-600 bg-gray-50 p-3 rounded-2xl border border-gray-100 leading-relaxed">

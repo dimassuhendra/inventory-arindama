@@ -117,6 +117,9 @@
                                 {!! sortLink('quantity', 'Stok & Unit') !!}
                             </th>
                             <th class="px-6 py-4 text-[10px] font-bold text-primary uppercase tracking-widest text-center">
+                                Mulai Digunakan
+                            </th>
+                            <th class="px-6 py-4 text-[10px] font-bold text-primary uppercase tracking-widest text-center">
                                 Aksi</th>
                         </tr>
                     </thead>
@@ -158,11 +161,37 @@
                                         {{ $product->unit }}</p>
                                 </td>
 
+                                <td class="px-6 py-4 text-center">
+                                    @if ($product->first_used_at)
+                                        <span
+                                            class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg inline-flex items-center gap-1">
+                                            <i class="fa-solid fa-circle-check"></i>
+                                            {{ \Carbon\Carbon::parse($product->first_used_at)->format('d/m/Y') }}
+                                        </span>
+                                    @else
+                                        <span
+                                            class="text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg inline-flex items-center gap-1">
+                                            <i class="fa-solid fa-box-archive"></i>
+                                            Belum Digunakan
+                                        </span>
+                                    @endif
+                                </td>
+
                                 <td class="px-6 py-4">
                                     <div class="flex justify-center gap-2">
                                         <!-- Tombol Detail / QR -->
                                         <button
-                                            onclick="openDetailModal('{{ addslashes($product->name) }}', '{{ $product->slug }}', '{{ $product->category->name }}', '{{ $product->supplier->name ?? 'Supplier Belum Tersedia' }}', '{{ number_format($product->quantity, 0) }} {{ $product->unit }}', '{{ addslashes($product->description) }}', '{{ $product->image ? asset('storage/' . $product->image) : '' }}')"
+                                            onclick="openDetailModal(
+                                                '{{ addslashes($product->name) }}', 
+                                                '{{ $product->slug }}', 
+                                                '{{ $product->category->name }}', 
+                                                '{{ $product->supplier->name ?? 'Supplier Belum Tersedia' }}', 
+                                                '{{ number_format($product->quantity, 0) }} {{ $product->unit }}', 
+                                                '{{ addslashes($product->description) }}', 
+                                                '{{ $product->image ? asset('storage/' . $product->image) : '' }}', 
+                                                '{{ $product->first_used_at ? \Carbon\Carbon::parse($product->first_used_at)->format('d M Y') : 'Belum Digunakan' }}',
+                                                '{{ $product->first_used_at ? \Carbon\Carbon::parse($product->first_used_at)->format('Y-m-d') : '' }}'
+                                            )"
                                             class="w-9 h-9 rounded-xl bg-cyan-500 text-white hover:bg-cyan-600 transition flex items-center justify-center shadow-sm"
                                             title="Lihat Detail & QR">
                                             <i class="fa-solid fa-eye text-xs"></i>
@@ -170,7 +199,7 @@
 
                                         <!-- Tombol Edit -->
                                         <button
-                                            onclick="openModal('edit', {{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->quantity }}, {{ $product->category_id }}, '{{ $product->supplier_id ?? '' }}', '{{ $product->unit }}', '{{ addslashes($product->description) }}')"
+                                            onclick="openModal('edit', {{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->quantity }}, {{ $product->category_id }}, '{{ $product->supplier_id ?? '' }}', '{{ $product->unit }}', '{{ addslashes($product->description) }}', '{{ $product->first_used_at ? \Carbon\Carbon::parse($product->first_used_at)->format('Y-m-d') : '' }}')"
                                             class="w-9 h-9 rounded-xl bg-amber-50 text-amber-500 hover:bg-amber-500 hover:text-white transition flex items-center justify-center shadow-sm">
                                             <i class="fa-solid fa-pen-to-square text-xs"></i>
                                         </button>
@@ -263,6 +292,17 @@
                         <span id="detail_supplier" class="font-semibold text-gray-700"></span>
                     </div>
 
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <span class="text-[10px] text-gray-400 font-bold block uppercase">Mulai Digunakan</span>
+                            <span id="detail_first_used" class="font-semibold text-primary"></span>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <span class="text-[10px] text-gray-400 font-bold block uppercase">Masa Pakai</span>
+                            <span id="detail_usage_age" class="font-semibold text-emerald-600"></span>
+                        </div>
+                    </div>
+
                     <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 text-xs">
                         <span class="text-[10px] text-gray-400 font-bold block uppercase mb-1">Deskripsi</span>
                         <p id="detail_desc" class="text-gray-600 leading-relaxed"></p>
@@ -272,7 +312,7 @@
         </div>
     </div>
 
-    <!-- Modal Form (Sama persis seperti sebelumnya) -->
+    {{-- Modal Edit Produk --}}
     <div id="modalProduct"
         class="fixed inset-0 bg-primary/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div
@@ -350,6 +390,16 @@
                         Produk <span class="text-red-500">*</span></label>
                     <textarea name="description" id="prod_desc" required rows="3" placeholder="Jelaskan spesifikasi produk..."
                         class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">
+                        Mulai Digunakan (Opsional)
+                    </label>
+                    <input type="date" name="first_used_at" id="prod_first_used"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+                    <p class="mt-1 text-[9px] text-gray-400">*Kosongkan jika barang masih tersimpan sebagai stok gudang.
+                    </p>
                 </div>
 
                 <div class="p-4 border-2 border-dashed border-accent/40 rounded-2xl bg-gray-50">
@@ -484,7 +534,7 @@
 
         let qrcodeObj = null;
 
-        function openDetailModal(name, slug, category, supplier, stock, desc, image) {
+        function openDetailModal(name, slug, category, supplier, stock, desc, image, firstUsedFormatted, rawFirstUsed) {
             document.getElementById('modalDetailProduct').classList.remove('hidden');
 
             document.getElementById('detail_name_qr').innerText = name;
@@ -493,15 +543,63 @@
             document.getElementById('detail_supplier').innerText = supplier;
             document.getElementById('detail_stock').innerText = stock;
             document.getElementById('detail_desc').innerText = desc;
+            document.getElementById('detail_first_used').innerText = firstUsedFormatted;
+
+            // --- LOGIKA HITUNG MASA PAKAI JS ---
+            const usageAgeElem = document.getElementById('detail_usage_age');
+
+            if (rawFirstUsed) {
+                const startDate = new Date(rawFirstUsed);
+                const today = new Date();
+
+                // Sederhanakan jam ke 00:00:00 untuk komparasi tanggal
+                startDate.setHours(0, 0, 0, 0);
+                today.setHours(0, 0, 0, 0);
+
+                let years = today.getFullYear() - startDate.getFullYear();
+                let months = today.getMonth() - startDate.getMonth();
+                let days = today.getDate() - startDate.getDate();
+
+                if (days < 0) {
+                    months--;
+                    // Ambil jumlah hari di bulan sebelumnya
+                    const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+                    days += prevMonth.getDate();
+                }
+
+                if (months < 0) {
+                    years--;
+                    months += 12;
+                }
+
+                let ageText = '';
+                if (years > 0) {
+                    let parts = [`${years} Thn`];
+                    if (months > 0) parts.push(`${months} Bln`);
+                    if (days > 0) parts.push(`${days} Hari`);
+                    ageText = parts.join(' ');
+                } else if (months > 0) {
+                    let parts = [`${months} Bln`];
+                    if (days > 0) parts.push(`${days} Hari`);
+                    ageText = parts.join(' ');
+                } else {
+                    ageText = days === 0 ? 'Hari ini' : `${days} Hari`;
+                }
+
+                usageAgeElem.innerText = ageText;
+                usageAgeElem.className = "font-semibold text-emerald-600";
+            } else {
+                usageAgeElem.innerText = '-';
+                usageAgeElem.className = "font-semibold text-gray-400";
+            }
 
             // Generasi URL Publik untuk QR
             const publicUrl = `${window.location.origin}/p/${slug}`;
 
-            // Reset container QR Code
+            // Reset & Generate QR Code
             const qrContainer = document.getElementById('qrcode');
             qrContainer.innerHTML = '';
 
-            // Generate QR Code baru
             qrcodeObj = new QRCode(qrContainer, {
                 text: publicUrl,
                 width: 140,
@@ -532,7 +630,8 @@
             document.body.removeChild(link);
         }
 
-        function openModal(mode, id = null, name = '', qty = 0, catId = '', supId = '', unit = '', desc = '') {
+        function openModal(mode, id = null, name = '', qty = 0, catId = '', supId = '', unit = '', desc = '', firstUsed =
+            '') {
             const modal = document.getElementById('modalProduct');
             const form = document.getElementById('productForm');
             const method = document.getElementById('formMethod');
@@ -554,6 +653,7 @@
                 document.getElementById('prod_supplier').value = supId ? supId : "";
                 document.getElementById('prod_unit').value = unit;
                 document.getElementById('prod_desc').value = desc;
+                document.getElementById('prod_first_used').value = firstUsed;
 
                 // Mode Edit: Styling warna Amber untuk Koreksi Stok
                 qtyLabel.innerText = 'Koreksi Stok Manual';

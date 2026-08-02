@@ -73,6 +73,7 @@ class ProductController extends Controller
             'supplier_id' => 'nullable|exists:suppliers,id',
             'description' => 'required|string',
             'unit' => 'required|string',
+            'first_used_at' => 'nullable|date',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -104,6 +105,7 @@ class ProductController extends Controller
             'supplier_id' => 'required|exists:suppliers,id',
             'unit' => 'required',
             'quantity' => 'required|numeric|min:0',
+            'first_used_at' => 'nullable|date',
         ]);
 
         $data = $request->all();
@@ -200,6 +202,37 @@ class ProductController extends Controller
             $maskedSupplier = substr($supplierName, 0, 2) . '***';
         }
 
-        return view('products_public', compact('product', 'maskedSupplier'));
+        // Hitung Umur Penggunaan
+        $usageAge = null;
+        if ($product->first_used_at) {
+            $start = \Carbon\Carbon::parse($product->first_used_at)->startOfDay();
+            $now = \Carbon\Carbon::now()->startOfDay();
+
+            // Menggunakan diff() bawaan Carbon / DateTime
+            $diff = $start->diff($now);
+
+            $years = $diff->y;
+            $months = $diff->m;
+            $days = $diff->d;
+
+            if ($years > 0) {
+                // Lebih dari / sama dengan 1 Tahun -> Tampilkan Tahun, Bulan, Hari
+                $parts = ["{$years} Tahun"];
+                if ($months > 0) $parts[] = "{$months} Bulan";
+                if ($days > 0) $parts[] = "{$days} Hari";
+                $usageAge = implode(' ', $parts);
+            } elseif ($months > 0) {
+                // Lebih dari / sama dengan 1 Bulan -> Tampilkan Bulan dan Hari
+                $parts = ["{$months} Bulan"];
+                if ($days > 0) $parts[] = "{$days} Hari";
+                $usageAge = implode(' ', $parts);
+            } else {
+                // Kurang dari 1 Bulan -> Cukup Hari saja
+                // Jika mulai hari ini, diff->d adalah 0
+                $usageAge = $days == 0 ? 'Hari ini' : "{$days} Hari";
+            }
+        }
+
+        return view('products_public', compact('product', 'maskedSupplier', 'usageAge'));
     }
 }
