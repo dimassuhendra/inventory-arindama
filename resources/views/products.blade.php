@@ -523,10 +523,16 @@
             });
         @endif
         @if (session('error') || $errors->any())
+            @php
+                $errorMsg = session('error');
+                if ($errors->any()) {
+                    $errorMsg = implode('<br>', $errors->all());
+                }
+            @endphp
             Swal.fire({
                 icon: 'error',
                 title: 'Terjadi Kesalahan',
-                text: "{{ session('error') ?? 'Pastikan semua input wajib sudah terisi dengan benar.' }}",
+                html: "{!! $errorMsg !!}", // Menggunakan html agar pesan error tampil per baris
                 confirmButtonColor: '#346739',
                 borderRadius: '20px'
             });
