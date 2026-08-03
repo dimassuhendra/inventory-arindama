@@ -88,8 +88,7 @@
 
             <!-- Footer -->
             <footer class="mt-auto px-8 py-4 text-center text-xs text-slate-400 border-t border-slate-200/60">
-                &copy; {{ date('Y') }} <span class="font-bold text-inv-teal">Mybolo Inventory</span>. Enterprise
-                Resource Management.
+                &copy; {{ date('Y') }} <span class="font-bold text-inv-teal">Mybolo Asset & Inventory System</span>. All rights reserved.
             </footer>
         </div>
     </div>

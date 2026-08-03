@@ -1,5 +1,5 @@
-<header class="mx-4 lg:mx-8 mt-4 mb-4">
-    <!-- Navbar Melayang Berlatar Belakang Tint Soft Slate (Bukan Putih #ffffff) -->
+<header class="mx-4 lg:mx-8 mt-4 mb-4 relative z-50">
+    <!-- Navbar Melayang Berlatar Belakang Tint Soft Slate -->
     <div
         class="bg-slate-200/70 backdrop-blur-md rounded-2xl shadow-sm border border-slate-300/80 px-4 lg:px-6 py-2.5 flex items-center justify-between">
 
@@ -12,34 +12,25 @@
             </button>
 
             <!-- Page Title Info -->
-            <div class="flex flex-col">
-                <div class="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
-                    <a href="{{ route('dashboard') }}" class="hover:text-inv-teal transition-colors">Mybolo</a>
-                    <i class="fa-solid fa-chevron-right text-[8px] text-slate-400"></i>
-                    <span class="text-slate-700 font-semibold">Inventory Platform</span>
+            <div class="flex flex-col justify-center" x-data="clockWidget()" x-init="startClock()">
+                <p x-text="dateString" class="text-xs lg:text-sm font-medium text-slate-500 leading-none"></p>
+
+                <div class="flex items-baseline gap-2 mt-1">
+                    <h1 x-text="timeString"
+                        class="text-xl lg:text-2xl font-serif font-bold text-slate-800 tracking-tight font-mono leading-none">
+                    </h1>
                 </div>
-                <h1 class="text-base lg:text-lg font-serif font-bold text-slate-800 leading-tight">
-                    {{ $pageTitle ?? 'Dashboard Overview' }}
-                </h1>
             </div>
         </div>
 
         <!-- KANAN: User Profile Capsule Button -->
         <div class="flex items-center gap-3" x-data="{ openProfile: false }">
-
-            <!-- Quick System Active Pill -->
-            <div
-                class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 text-[11px] font-semibold">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>System Active</span>
-            </div>
-
             <div class="h-6 w-[1px] bg-slate-300 hidden sm:block"></div>
 
             <!-- Profile Pill Button -->
             <div class="relative">
                 <button @click="openProfile = !openProfile"
-                    class="flex items-center gap-2.5 p-1 pl-3 rounded-full bg-slate-100/90 border border-slate-300 hover:bg-slate-200/80 shadow-sm transition-all">
+                    class="flex items-center gap-2.5 p-1 pl-3 rounded-full bg-slate-100/90 border border-slate-300 hover:bg-slate-200/80 shadow-sm transition-all cursor-pointer">
 
                     <div class="hidden md:flex flex-col text-right">
                         <span class="text-xs font-bold text-slate-800 leading-tight">{{ Auth::user()->name }}</span>
@@ -58,22 +49,22 @@
                         :class="openProfile ? 'rotate-180' : 'rotate-0'"></i>
                 </button>
 
-                <!-- Profile Dropdown Card -->
+                <!-- Profile Dropdown Card (z-[100] & Shadow-2xl agar selalu tampil di atas konten/chart) -->
                 <div x-show="openProfile" @click.away="openProfile = false" x-cloak
                     x-transition:enter="transition ease-out duration-200"
                     x-transition:enter-start="opacity-0 scale-95 translate-y-1"
                     x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                    class="absolute right-0 mt-2 w-48 bg-slate-100 backdrop-blur-md rounded-2xl shadow-xl border border-slate-300 p-2 z-50">
+                    class="absolute right-0 mt-2 w-52 bg-slate-100/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-300/80 p-2 z-[100]">
 
                     <div class="px-3 py-2 border-b border-slate-200">
                         <p class="text-xs font-bold text-slate-800 truncate">{{ Auth::user()->name }}</p>
-                        <p class="text-[10px] text-slate-400 truncate">{{ Auth::user()->email }}</p>
+                        <p class="text-[10px] text-slate-500 truncate">{{ Auth::user()->email }}</p>
                     </div>
 
                     <form action="{{ route('logout') }}" method="POST" class="mt-1">
                         @csrf
                         <button type="submit"
-                            class="w-full flex items-center px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 rounded-xl transition-colors">
+                            class="w-full flex items-center px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-500/10 rounded-xl transition-colors cursor-pointer">
                             <i class="fa-solid fa-power-off mr-2 text-red-500"></i>
                             Logout
                         </button>
@@ -84,3 +75,40 @@
         </div>
     </div>
 </header>
+
+<script>
+    function clockWidget() {
+        return {
+            dateString: '',
+            timeString: '',
+            startClock() {
+                const update = () => {
+                    const now = new Date();
+
+                    // Format Hari & Tanggal (contoh: Selasa, 4 Agustus 2026)
+                    const optionsDate = {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                        timeZone: 'Asia/Jakarta'
+                    };
+                    this.dateString = new Intl.DateTimeFormat('id-ID', optionsDate).format(now);
+
+                    // Format Jam:Menit:Detik (contoh: 14:05:22)
+                    const optionsTime = {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                        timeZone: 'Asia/Jakarta'
+                    };
+                    this.timeString = new Intl.DateTimeFormat('id-ID', optionsTime).format(now).replace(/\./g, ':');
+                };
+
+                update();
+                setInterval(update, 1000); // Update setiap detik
+            }
+        }
+    }
+</script>
