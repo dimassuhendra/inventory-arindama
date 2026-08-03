@@ -83,13 +83,14 @@
                 </button>
             </div>
 
-            <form id="supplierForm" method="POST" class="p-8 space-y-5 font-sans">
+            <!-- KODE BARU DI MODAL SUPPLIER -->
+            <form id="supplierForm" action="{{ route('suppliers.store') }}" method="POST" class="p-8 space-y-5 font-sans">
                 @csrf
-                <input type="hidden" name="_method" id="formMethod" value="POST">
+                <input type="hidden" name="_method" id="formMethod" value=""> <!-- Kosongkan nilai defaultnya -->
 
                 <div>
                     <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Nama Supplier /
-                        Perusahaan</label>
+                        Perusahaan <span class="text-red-500">*</span></label>
                     <input type="text" name="name" id="sup_name" required
                         placeholder="Contoh: PT. Arindama Andra Tech"
                         class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
@@ -123,18 +124,31 @@
             const title = document.getElementById('modalTitle');
 
             modal.classList.remove('hidden');
+
             if (mode === 'edit') {
                 title.innerText = 'Edit Supplier';
                 form.action = `/suppliers/${id}`;
-                method.value = 'PUT';
+                method.value = 'PUT'; // Mengirim _method = PUT untuk Update
                 document.getElementById('sup_name').value = name;
-                document.getElementById('sup_telp').value = telp; // JS Bug Fixed
+                document.getElementById('sup_telp').value = telp;
                 document.getElementById('sup_address').value = address;
             } else {
                 title.innerText = 'Tambah Supplier Baru';
                 form.action = "{{ route('suppliers.store') }}";
-                method.value = 'POST';
+                method.value = ''; // KOSONGKAN _method untuk POST biasa (mencegah Error 419)
                 form.reset();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modalSupplier').classList.add('hidden');
+        }
+
+        // Tutup modal jika klik di luar box
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalSupplier');
+            if (event.target == modal) {
+                closeModal();
             }
         }
 
