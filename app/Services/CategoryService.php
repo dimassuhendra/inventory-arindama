@@ -37,6 +37,7 @@ class CategoryService
     {
         $categories = Category::withCount('products')
             ->with('products')
+            ->orderBy('name', 'asc')
             ->get();
 
         // 1. Mini Analytics Data
@@ -46,16 +47,16 @@ class CategoryService
             return !empty($cat->allowed_roles);
         })->count();
 
-        // 2. Roles Data untuk Form Checkbox Modal (Khusus Superadmin)
-        $allRoles = Role::pluck('name')->toArray();
+        // 2. Roles Data sebagai Model Collection Eloquent
+        $roles = \Spatie\Permission\Models\Role::orderBy('name', 'asc')->get();
 
         return [
             'categories' => $categories,
+            'roles' => $roles, // <--- Key diganti menjadi $roles
             'total_categories' => $totalCategories,
             'top_category_name' => $topCategory ? $topCategory->name : '-',
             'top_category_count' => $topCategory ? $topCategory->products_count : 0,
             'restricted_count' => $restrictedCategoriesCount,
-            'all_roles' => $allRoles,
         ];
     }
 

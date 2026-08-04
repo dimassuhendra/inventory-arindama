@@ -237,15 +237,17 @@
                                 <i class="fa-solid fa-user-shield mr-1"></i> Batasi Akses Role (Restricted Roles)
                             </label>
                             <p class="text-[10px] text-slate-400 mb-2">Kosongkan jika kategori ini ingin dijadikan
-                                <b>Public</b> (dapat diakses semua role).</p>
+                                <b>Public</b> (dapat diakses semua role).
+                            </p>
 
                             <div
                                 class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 max-h-36 overflow-y-auto">
                                 @foreach ($roles as $role)
                                     <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
-                                        <input type="checkbox" name="allowed_roles[]" value="{{ $role->name }}"
+                                        <input type="checkbox" name="allowed_roles[]"
+                                            value="{{ is_object($role) ? $role->name : $role }}"
                                             class="rounded border-slate-300 text-inv-teal focus:ring-inv-teal">
-                                        <span>{{ $role->name }}</span>
+                                        <span>{{ is_object($role) ? $role->name : $role }}</span>
                                     </label>
                                 @endforeach
                             </div>

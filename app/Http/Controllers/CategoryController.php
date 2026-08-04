@@ -6,20 +6,23 @@ use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
 
 class CategoryController extends Controller
 {
+    protected CategoryService $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     public function index(Request $request)
     {
-        $categories = Category::withCount('products')
-            ->orderBy('name', 'asc')
-            ->get();
+        // Ambil seluruh data halaman termasuk $total_categories, $top_category_name, dll dari Service
+        $data = $this->categoryService->getCategoryPageData();
+        $data['isSuperAdmin'] = CategoryService::isSuperAdmin();
 
-        $roles = Role::orderBy('name', 'asc')->get();
-        $isSuperAdmin = CategoryService::isSuperAdmin();
-
-        return view('categories', compact('categories', 'roles', 'isSuperAdmin'));
+        return view('categories', $data);
     }
 
     public function store(CategoryRequest $request)
@@ -27,7 +30,6 @@ class CategoryController extends Controller
         try {
             $data = $request->validated();
 
-            // Hanya Superadmin yang berhak menentukan allowed_roles
             if (!CategoryService::isSuperAdmin()) {
                 unset($data['allowed_roles']);
             }
@@ -54,7 +56,6 @@ class CategoryController extends Controller
             if (!CategoryService::isSuperAdmin()) {
                 unset($data['allowed_roles']);
             } else if (!isset($data['allowed_roles'])) {
-                // Jika Superadmin mengosongkan pilihan role, ubah menjadi kategori Public (null)
                 $data['allowed_roles'] = null;
             }
 
