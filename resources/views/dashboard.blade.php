@@ -6,81 +6,82 @@
 
     <div class="space-y-6">
 
-        <!-- BARIS 1: 5 CORE STAT CARDS -->
+        <!-- BARIS 1: 5 CORE STAT CARDS BERWARNA BRAND INV -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
 
-            <!-- Total Produk -->
+            <!-- Total Produk (Teal to Mint Gradient) -->
             <a href="{{ route('products.index') }}"
-                class="bg-slate-200/60 backdrop-blur-md p-5 rounded-2xl border border-slate-300/80 hover:border-inv-teal hover:shadow-lg transition-all duration-300 relative overflow-hidden group">
+                class="bg-gradient-to-br from-[#00a8b5] to-[#2dd4bf] p-5 rounded-2xl shadow-lg shadow-teal-500/10 text-white hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Total Produk</p>
-                    <h3 class="text-3xl font-serif font-bold text-slate-800 mt-1.5">{{ $total_products }}</h3>
+                    <p class="text-[10px] font-bold text-teal-100 uppercase tracking-widest">Total Produk</p>
+                    <h3 class="text-3xl font-serif font-bold text-white mt-1.5">{{ $total_products }}</h3>
                     <div
-                        class="mt-3 inline-flex items-center text-[10px] font-bold text-inv-primary bg-inv-primary/10 px-2.5 py-1 rounded-lg">
-                        <i class="fa-solid fa-boxes-stacked mr-1"></i> Data Barang
+                        class="mt-3 inline-flex items-center text-[10px] font-bold text-teal-900 bg-white/80 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
+                        <i class="fa-solid fa-boxes-stacked mr-1 text-inv-teal"></i> Data Barang
                     </div>
                 </div>
                 <i
-                    class="fa-solid fa-box-archive absolute -right-3 -bottom-3 text-6xl text-inv-primary/10 group-hover:scale-110 transition-transform"></i>
+                    class="fa-solid fa-box-archive absolute -right-3 -bottom-3 text-6xl text-white/15 group-hover:scale-110 transition-transform"></i>
             </a>
 
-            <!-- Kategori Barang -->
+            <!-- Kategori Barang (Primary to Box Blue Gradient) -->
             <a href="{{ route('categories.index') }}"
-                class="bg-slate-200/60 backdrop-blur-md p-5 rounded-2xl border border-slate-300/80 hover:border-inv-teal hover:shadow-lg transition-all duration-300 relative overflow-hidden group">
+                class="bg-gradient-to-br from-[#0c66c8] to-[#2563eb] p-5 rounded-2xl shadow-lg shadow-blue-500/10 text-white hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Kategori</p>
-                    <h3 class="text-3xl font-serif font-bold text-slate-800 mt-1.5">{{ $total_categories }}</h3>
+                    <p class="text-[10px] font-bold text-blue-100 uppercase tracking-widest">Kategori</p>
+                    <h3 class="text-3xl font-serif font-bold text-white mt-1.5">{{ $total_categories }}</h3>
                     <div
-                        class="mt-3 inline-flex items-center text-[10px] font-bold text-inv-teal bg-inv-teal/10 px-2.5 py-1 rounded-lg">
-                        <i class="fa-solid fa-tags mr-1"></i> Klasifikasi
+                        class="mt-3 inline-flex items-center text-[10px] font-bold text-blue-900 bg-white/80 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
+                        <i class="fa-solid fa-tags mr-1 text-inv-primary"></i> Klasifikasi
                     </div>
                 </div>
                 <i
-                    class="fa-solid fa-tag absolute -right-3 -bottom-3 text-6xl text-inv-teal/10 group-hover:scale-110 transition-transform"></i>
+                    class="fa-solid fa-tag absolute -right-3 -bottom-3 text-6xl text-white/15 group-hover:scale-110 transition-transform"></i>
             </a>
 
-            <!-- Supplier -->
+            <!-- Supplier (Deep Navy to Hover Blue Gradient) -->
             <a href="{{ route('suppliers.index') }}"
-                class="bg-slate-200/60 backdrop-blur-md p-5 rounded-2xl border border-slate-300/80 hover:border-inv-box hover:shadow-lg transition-all duration-300 relative overflow-hidden group">
+                class="bg-gradient-to-br from-[#081d34] to-[#08488f] p-5 rounded-2xl shadow-lg shadow-slate-900/10 text-white hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Supplier</p>
-                    <h3 class="text-3xl font-serif font-bold text-slate-800 mt-1.5">{{ $total_suppliers }}</h3>
+                    <p class="text-[10px] font-bold text-teal-200 uppercase tracking-widest">Supplier</p>
+                    <h3 class="text-3xl font-serif font-bold text-white mt-1.5">{{ $total_suppliers }}</h3>
                     <div
-                        class="mt-3 inline-flex items-center text-[10px] font-bold text-inv-box bg-inv-box/10 px-2.5 py-1 rounded-lg">
-                        <i class="fa-solid fa-truck-field mr-1"></i> Mitra Kerja
+                        class="mt-3 inline-flex items-center text-[10px] font-bold text-slate-900 bg-white/80 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
+                        <i class="fa-solid fa-truck-field mr-1 text-inv-dark"></i> Mitra Kerja
                     </div>
                 </div>
                 <i
-                    class="fa-solid fa-truck-ramp-box absolute -right-3 -bottom-3 text-6xl text-inv-box/10 group-hover:scale-110 transition-transform"></i>
+                    class="fa-solid fa-truck-ramp-box absolute -right-3 -bottom-3 text-6xl text-white/15 group-hover:scale-110 transition-transform"></i>
             </a>
 
-            <!-- Aset Dipinjam -->
+            <!-- Aset Dipinjam (Warm Amber Gradient) -->
             <a href="{{ route('loans.index') }}"
-                class="bg-slate-200/60 backdrop-blur-md p-5 rounded-2xl border border-slate-300/80 hover:border-amber-500 hover:shadow-lg transition-all duration-300 relative overflow-hidden group">
+                class="bg-gradient-to-br from-amber-500 to-orange-600 p-5 rounded-2xl shadow-lg shadow-amber-500/10 text-white hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Aset Dipinjam</p>
+                    <p class="text-[10px] font-bold text-amber-100 uppercase tracking-widest">Aset Dipinjam</p>
                     <div class="flex items-baseline gap-1.5 mt-1.5">
-                        <h3 class="text-3xl font-serif font-bold text-amber-600">{{ $total_borrowed_units }}</h3>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Unit</span>
+                        <h3 class="text-3xl font-serif font-bold text-white">{{ $total_borrowed_units }}</h3>
+                        <span class="text-[10px] font-bold text-amber-100 uppercase">Unit</span>
                     </div>
                     <div
-                        class="mt-3 inline-flex items-center text-[10px] font-bold text-amber-700 bg-amber-500/10 px-2.5 py-1 rounded-lg">
-                        <i class="fa-solid fa-hand-holding-box mr-1"></i> {{ $total_borrowed_types }} Jenis Barang
+                        class="mt-3 inline-flex items-center text-[10px] font-bold text-amber-900 bg-white/80 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
+                        <i class="fa-solid fa-hand-holding-box mr-1 text-amber-600"></i> {{ $total_borrowed_types }} Jenis
+                        Barang
                     </div>
                 </div>
                 <i
-                    class="fa-solid fa-handshake-angle absolute -right-3 -bottom-3 text-6xl text-amber-500/10 group-hover:scale-110 transition-transform"></i>
+                    class="fa-solid fa-handshake-angle absolute -right-3 -bottom-3 text-6xl text-white/15 group-hover:scale-110 transition-transform"></i>
             </a>
 
-            <!-- Stok Menipis -->
+            <!-- Stok Menipis (Rose to Red Alert Gradient) -->
             <a href="{{ route('products.index') }}"
                 class="bg-gradient-to-br from-red-500 to-rose-600 p-5 rounded-2xl shadow-lg shadow-red-500/20 text-white hover:scale-[1.02] transition-all duration-300 relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-[10px] font-bold text-red-100 uppercase tracking-widest">Stok Menipis</p>
-                    <h3 class="text-3xl font-serif font-bold mt-1.5">{{ $low_stock }}</h3>
+                    <h3 class="text-3xl font-serif font-bold text-white mt-1.5">{{ $low_stock }}</h3>
                     <div
-                        class="mt-3 inline-flex items-center text-[10px] font-bold bg-white/20 px-2.5 py-1 rounded-lg backdrop-blur-sm">
-                        <i class="fa-solid fa-triangle-exclamation mr-1"></i> Restock Segera
+                        class="mt-3 inline-flex items-center text-[10px] font-bold text-red-900 bg-white/80 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
+                        <i class="fa-solid fa-triangle-exclamation mr-1 text-red-600"></i> Restock Segera
                     </div>
                 </div>
                 <i
@@ -89,69 +90,83 @@
 
         </div>
 
-        <!-- BARIS 2: KARTU ANALISIS TAMBAHAN -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- BARIS 2: KARTU ANALISIS TAMBAHAN BERWARNA -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
 
-            <!-- Health Rate Card -->
+            <!-- Health Rate Card (Emerald Fresh Gradient) -->
             <div
-                class="bg-slate-200/60 backdrop-blur-md p-4 rounded-2xl border border-slate-300/80 flex items-center justify-between">
-                <div>
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Kesehatan Stok</p>
-                    <h4 class="text-2xl font-serif font-bold text-emerald-600 mt-1">{{ $stock_health_rate }}%</h4>
-                    <p class="text-[10px] text-slate-500 mt-0.5">Stok dalam batas aman</p>
+                class="bg-gradient-to-br from-emerald-500 to-teal-600 p-4 rounded-2xl shadow-md text-white flex items-center justify-between relative overflow-hidden group">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-bold text-emerald-100 uppercase tracking-widest">Kesehatan Stok</p>
+                    <h4 class="text-2xl font-serif font-bold text-white mt-1">{{ $stock_health_rate }}%</h4>
+                    <p class="text-[10px] text-emerald-100 mt-0.5">Stok dalam batas aman</p>
                 </div>
                 <div
-                    class="w-11 h-11 rounded-2xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center text-lg">
+                    class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center text-lg shadow-sm relative z-10">
                     <i class="fa-solid fa-heart-pulse"></i>
                 </div>
+                <i
+                    class="fa-solid fa-notes-medical absolute -right-2 -bottom-2 text-5xl text-white/10 group-hover:scale-110 transition-transform"></i>
             </div>
 
-            <!-- Monthly Movement Card -->
+            <!-- Monthly Movement Card (Cyan/Teal Ocean Gradient) -->
             <div
-                class="bg-slate-200/60 backdrop-blur-md p-4 rounded-2xl border border-slate-300/80 flex items-center justify-between">
-                <div>
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Lalu Lintas Bulan Ini</p>
+                class="bg-gradient-to-br from-[#00a8b5] to-[#0c66c8] p-4 rounded-2xl shadow-md text-white flex items-center justify-between relative overflow-hidden group">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-bold text-cyan-100 uppercase tracking-widest">Lalu Lintas Bulan Ini</p>
                     <div class="flex items-center gap-2 mt-1">
-                        <span class="text-xs font-bold text-emerald-600">+{{ $monthly_entries_qty }} In</span>
-                        <span class="text-slate-300">|</span>
-                        <span class="text-xs font-bold text-rose-600">-{{ $monthly_exits_qty }} Out</span>
+                        <span
+                            class="text-xs font-bold text-emerald-200 bg-white/10 px-2 py-0.5 rounded-md backdrop-blur-sm">+{{ $monthly_entries_qty }}
+                            In</span>
+                        <span class="text-cyan-200">|</span>
+                        <span
+                            class="text-xs font-bold text-rose-200 bg-white/10 px-2 py-0.5 rounded-md backdrop-blur-sm">-{{ $monthly_exits_qty }}
+                            Out</span>
                     </div>
-                    <p class="text-[10px] text-slate-500 mt-0.5">Total pergerakan fisik</p>
+                    <p class="text-[10px] text-cyan-100 mt-1">Total pergerakan fisik</p>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-inv-teal/15 text-inv-teal flex items-center justify-center text-lg">
+                <div
+                    class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center text-lg shadow-sm relative z-10">
                     <i class="fa-solid fa-arrow-up-right-dots"></i>
                 </div>
+                <i
+                    class="fa-solid fa-chart-line-up absolute -right-2 -bottom-2 text-5xl text-white/10 group-hover:scale-110 transition-transform"></i>
             </div>
 
-            <!-- Overdue Loans Card -->
+            <!-- Overdue Loans Card (Rose Warning Gradient) -->
             <div
-                class="bg-slate-200/60 backdrop-blur-md p-4 rounded-2xl border border-slate-300/80 flex items-center justify-between">
-                <div>
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Pinjaman Terlambat</p>
-                    <h4
-                        class="text-2xl font-serif font-bold {{ $overdue_loans_count > 0 ? 'text-rose-600' : 'text-slate-700' }} mt-1">
-                        {{ $overdue_loans_count }} <span class="text-xs font-normal text-slate-400">Unit</span>
+                class="bg-gradient-to-br from-rose-600 to-red-700 p-4 rounded-2xl shadow-md text-white flex items-center justify-between relative overflow-hidden group">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-bold text-rose-100 uppercase tracking-widest">Pinjaman Terlambat</p>
+                    <h4 class="text-2xl font-serif font-bold text-white mt-1">
+                        {{ $overdue_loans_count }} <span class="text-xs font-normal text-rose-100">Unit</span>
                     </h4>
-                    <p class="text-[10px] text-slate-500 mt-0.5">Lewat tanggal pengembalian</p>
+                    <p class="text-[10px] text-rose-100 mt-0.5">Lewat tanggal pengembalian</p>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-rose-500/15 text-rose-500 flex items-center justify-center text-lg">
+                <div
+                    class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center text-lg shadow-sm relative z-10">
                     <i class="fa-solid fa-user-clock"></i>
                 </div>
+                <i
+                    class="fa-solid fa-calendar-xmark absolute -right-2 -bottom-2 text-5xl text-white/10 group-hover:scale-110 transition-transform"></i>
             </div>
 
-            <!-- Cart Requests Pending -->
+            <!-- Cart Requests Pending (Deep Navy & Box Blue Gradient) -->
             <div
-                class="bg-slate-200/60 backdrop-blur-md p-4 rounded-2xl border border-slate-300/80 flex items-center justify-between">
-                <div>
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Antrean Permintaan</p>
-                    <h4 class="text-2xl font-serif font-bold text-inv-box mt-1">
-                        {{ $pending_cart_requests }} <span class="text-xs font-normal text-slate-400">Pending</span>
+                class="bg-gradient-to-br from-[#091e3a] to-[#2563eb] p-4 rounded-2xl shadow-md text-white flex items-center justify-between relative overflow-hidden group">
+                <div class="relative z-10">
+                    <p class="text-[10px] font-bold text-blue-200 uppercase tracking-widest">Antrean Permintaan</p>
+                    <h4 class="text-2xl font-serif font-bold text-inv-mint mt-1">
+                        {{ $pending_cart_requests }} <span class="text-xs font-normal text-blue-100">Pending</span>
                     </h4>
-                    <p class="text-[10px] text-slate-500 mt-0.5">Menunggu verifikasi</p>
+                    <p class="text-[10px] text-blue-200 mt-0.5">Menunggu verifikasi</p>
                 </div>
-                <div class="w-11 h-11 rounded-2xl bg-inv-box/15 text-inv-box flex items-center justify-center text-lg">
+                <div
+                    class="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md text-inv-mint flex items-center justify-center text-lg shadow-sm relative z-10">
                     <i class="fa-solid fa-cart-flatbed"></i>
                 </div>
+                <i
+                    class="fa-solid fa-clipboard-list-check absolute -right-2 -bottom-2 text-5xl text-white/10 group-hover:scale-110 transition-transform"></i>
             </div>
 
         </div>
@@ -199,7 +214,8 @@
                         <h3 class="font-serif font-bold text-slate-800 text-base">Top 5 Barang Fast Moving</h3>
                         <p class="text-[11px] text-slate-500">Paling sering keluar/dipakai</p>
                     </div>
-                    <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xs">
+                    <div
+                        class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xs">
                         <i class="fa-solid fa-fire"></i>
                     </div>
                 </div>
