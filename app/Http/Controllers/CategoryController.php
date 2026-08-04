@@ -3,38 +3,53 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Http\Requests\CategoryRequest;
+use App\Services\CategoryService;
 
 class CategoryController extends Controller
 {
+    protected CategoryService $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     public function index()
     {
-        $categories = Category::withCount('products')->with('products')->get();
-        return view('categories', compact('categories'));
+        $data = $this->categoryService->getCategoryPageData();
+        $data['pageTitle'] = 'Kategori Produk';
+
+        return view('categories', $data);
     }
 
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $request->validate(['name' => 'required|string|max:255|unique:categories']);
-        Category::create($request->all());
-        return redirect()->back()->with('success', 'Kategori berhasil ditambahkan.');
-    }
-
-    public function update(Request $request, $id)
-    {
-        $category = Category::findOrFail($id);
-        $request->validate(['name' => 'required|string|max:255|unique:categories,name,' . $id]);
-        $category->update($request->all());
-        return redirect()->back()->with('success', 'Kategori berhasil diperbarui.');
-    }
-
-    public function destroy($id)
-    {
-        $category = Category::findOrFail($id);
-        if ($category->products()->count() > 0) {
-            return redirect()->back()->with('error', 'Kategori tidak bisa dihapus karena masih memiliki produk.');
+        try {
+            $this->categoryService->createCategory($request->validated());
+            return redirect()->back()->with('success', 'Kategori berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-        $category->delete();
-        return redirect()->back()->with('success', 'Kategori berhasil dihapus.');
+    }
+
+    public function update(CategoryRequest $request, Category $category)
+    {
+        try {
+            $this->categoryService->updateCategory($category, $request->validated());
+            return redirect()->back()->with('success', 'Kategori berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function destroy(Category $category)
+    {
+        try {
+            $this->categoryService->deleteCategory($category);
+            return redirect()->back()->with('success', 'Kategori berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }

@@ -13,7 +13,12 @@ class Category extends Model
     protected $fillable = [
         'name',
         'slug',
-        'image'
+        'image',
+        'allowed_roles'
+    ];
+
+    protected $casts = [
+        'allowed_roles' => 'array',
     ];
 
     /**
