@@ -8,6 +8,31 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryService
 {
+
+    public static function isSuperAdmin(): bool
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return false;
+        }
+
+        // 1. Cek via Spatie Permission (hasAnyRole)
+        $adminRoles = ['Super Admin', 'superadmin', 'Superadmin', 'super_admin', 'Administrator', 'administrator', 'Admin', 'admin'];
+        if ($user->hasAnyRole($adminRoles)) {
+            return true;
+        }
+
+        // 2. Fallback Direct Relation Check (Mengantisipasi Spatie Cache Issue di Production)
+        if ($user->roles && $user->roles->contains(function ($role) use ($adminRoles) {
+            return in_array($role->name, $adminRoles);
+        })) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function getCategoryPageData(): array
     {
         $categories = Category::withCount('products')
@@ -70,30 +95,17 @@ class CategoryService
             return false;
         }
 
-        // Daftar role yang dianggap sebagai Super Admin / Pengelola Utama
-        $adminRoles = [
-            'Super Admin',
-            'superadmin',
-            'Superadmin',
-            'super_admin',
-            'SUPERADMIN',
-            'Administrator',
-            'administrator',
-            'Admin',
-            'admin'
-        ];
-
-        // 1. Jika user adalah Admin/Super Admin, SELALU punya akses penuh
-        if ($user->hasAnyRole($adminRoles)) {
+        // 1. Superadmin SELALU BISA mengelola seluruh kategori
+        if (self::isSuperAdmin()) {
             return true;
         }
 
-        // 2. Jika allowed_roles kosong/null, dianggap Public (Read-Only untuk Non-Admin)
+        // 2. Kategori Public (allowed_roles Kosong / NULL): Semua User BISA mengelola
         if (empty($category->allowed_roles)) {
-            return false;
+            return true;
         }
 
-        // 3. Cek apakah user memiliki salah satu dari allowed_roles
+        // 3. Kategori Restricted: Hanya User dengan Role yang sesuai
         return $user->hasAnyRole($category->allowed_roles);
     }
 }

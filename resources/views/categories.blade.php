@@ -10,28 +10,12 @@
                 <p class="text-xs text-slate-500 mt-1">Pengelompokan inventaris dan kontrol otorisasi role</p>
             </div>
 
-            @php
-                $isAdminUser =
-                    Auth::check() &&
-                    Auth::user()->hasAnyRole([
-                        'Super Admin',
-                        'superadmin',
-                        'Superadmin',
-                        'super_admin',
-                        'Administrator',
-                        'administrator',
-                        'Admin',
-                        'admin',
-                    ]);
-            @endphp
-
-            @if ($isAdminUser)
-                <button @click="openCategoryModal('add')"
-                    class="bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white px-5 py-3 rounded-2xl shadow-lg shadow-inv-teal/20 transition-all flex items-center justify-center gap-2.5 font-bold text-xs tracking-wide cursor-pointer">
-                    <i class="fa-solid fa-plus text-sm"></i>
-                    <span>Tambah Kategori Baru</span>
-                </button>
-            @endif
+            <!-- SEMUA USER BISA TAMBAH KATEGORI -->
+            <button @click="openCategoryModal('add')"
+                class="bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white px-5 py-3 rounded-2xl shadow-lg shadow-inv-teal/20 transition-all flex items-center justify-center gap-2.5 font-bold text-xs tracking-wide cursor-pointer">
+                <i class="fa-solid fa-plus text-sm"></i>
+                <span>Tambah Kategori Baru</span>
+            </button>
         </div>
 
         <!-- 2. MINI ANALYTICS BAR (3 CARDS BERWARNA TEMA INV) -->
@@ -237,32 +221,41 @@
                     @csrf
                     <input type="hidden" name="_method" id="formMethod" value="POST">
 
-                    <!-- Input Nama Kategori -->
+                    <!-- Input Nama Kategori (Semua User) -->
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-2">Nama
-                            Kategori</label>
-                        <input type="text" name="name" id="cat_name" required placeholder="Misal: Perangkat IT"
-                            class="w-full bg-white border border-slate-300 rounded-xl px-4 py-3 text-xs text-slate-800 outline-none focus:border-inv-teal transition-all">
+                        <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                            Nama Kategori <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" name="name" id="cat_name" required
+                            placeholder="Contoh: Networking & Switch"
+                            class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-inv-teal">
                     </div>
 
-                    <!-- Checkbox Roles Allowed -->
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">Role yang
-                            Diizinkan Mengelola</label>
-                        <p class="text-[10px] text-slate-400 mb-3">Jika tidak dipilih, kategori dapat dilihat oleh semua
-                            role (Read-Only).</p>
+                    @if ($isSuperAdmin)
+                        <div class="pt-2 border-t border-slate-200">
+                            <label class="block text-[10px] font-bold text-inv-teal uppercase tracking-wider mb-1.5">
+                                <i class="fa-solid fa-user-shield mr-1"></i> Batasi Akses Role (Restricted Roles)
+                            </label>
+                            <p class="text-[10px] text-slate-400 mb-2">Kosongkan jika kategori ini ingin dijadikan
+                                <b>Public</b> (dapat diakses semua role).</p>
 
-                        <div class="grid grid-cols-2 gap-2 max-h-36 overflow-y-auto custom-scrollbar p-1">
-                            @foreach ($all_roles as $role)
-                                <label
-                                    class="flex items-center gap-2 p-2 bg-white rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors">
-                                    <input type="checkbox" name="allowed_roles[]" value="{{ $role }}"
-                                        class="role-checkbox rounded border-slate-300 text-inv-teal focus:ring-inv-teal">
-                                    <span class="text-xs font-semibold text-slate-700">{{ $role }}</span>
-                                </label>
-                            @endforeach
+                            <div
+                                class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 max-h-36 overflow-y-auto">
+                                @foreach ($roles as $role)
+                                    <label class="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
+                                        <input type="checkbox" name="allowed_roles[]" value="{{ $role->name }}"
+                                            class="rounded border-slate-300 text-inv-teal focus:ring-inv-teal">
+                                        <span>{{ $role->name }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
+                    @else
+                        <!-- Info untuk User Biasa -->
+                        <p class="text-[10px] text-slate-400 italic">
+                            * Kategori yang Anda buat secara otomatis berstatus <b>Public</b>.
+                        </p>
+                    @endif
 
                     <button type="submit"
                         class="w-full bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white font-bold py-3.5 rounded-xl shadow-lg shadow-inv-teal/20 transition-all text-xs tracking-wider uppercase cursor-pointer">

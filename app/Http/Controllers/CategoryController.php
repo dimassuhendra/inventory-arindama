@@ -20,7 +20,9 @@ class CategoryController extends Controller
         $data = $this->categoryService->getCategoryPageData();
         $data['pageTitle'] = 'Kategori Produk';
 
-        return view('categories', $data);
+        $isSuperAdmin = \App\Services\CategoryService::isSuperAdmin();
+
+        return view('categories', compact('categories', 'isSuperAdmin'));
     }
 
     public function store(CategoryRequest $request)
