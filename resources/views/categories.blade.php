@@ -10,7 +10,22 @@
                 <p class="text-xs text-slate-500 mt-1">Pengelompokan inventaris dan kontrol otorisasi role</p>
             </div>
 
-            @if (Auth::user()->hasRole('Super Admin') || Auth::user()->hasRole('superadmin'))
+            @php
+                $isAdminUser =
+                    Auth::check() &&
+                    Auth::user()->hasAnyRole([
+                        'Super Admin',
+                        'superadmin',
+                        'Superadmin',
+                        'super_admin',
+                        'Administrator',
+                        'administrator',
+                        'Admin',
+                        'admin',
+                    ]);
+            @endphp
+
+            @if ($isAdminUser)
                 <button @click="openCategoryModal('add')"
                     class="bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white px-5 py-3 rounded-2xl shadow-lg shadow-inv-teal/20 transition-all flex items-center justify-center gap-2.5 font-bold text-xs tracking-wide cursor-pointer">
                     <i class="fa-solid fa-plus text-sm"></i>

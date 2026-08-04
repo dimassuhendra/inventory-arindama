@@ -66,17 +66,34 @@ class CategoryService
     {
         $user = Auth::user();
 
-        // Superadmin selalu bisa mengelola
-        if ($user->hasRole('Super Admin') || $user->hasRole('superadmin')) {
+        if (!$user) {
+            return false;
+        }
+
+        // Daftar role yang dianggap sebagai Super Admin / Pengelola Utama
+        $adminRoles = [
+            'Super Admin',
+            'superadmin',
+            'Superadmin',
+            'super_admin',
+            'SUPERADMIN',
+            'Administrator',
+            'administrator',
+            'Admin',
+            'admin'
+        ];
+
+        // 1. Jika user adalah Admin/Super Admin, SELALU punya akses penuh
+        if ($user->hasAnyRole($adminRoles)) {
             return true;
         }
 
-        // Jika allowed_roles kosong/null, dianggap Public (Read-Only untuk non-superadmin)
+        // 2. Jika allowed_roles kosong/null, dianggap Public (Read-Only untuk Non-Admin)
         if (empty($category->allowed_roles)) {
             return false;
         }
 
-        // Cek apakah user memiliki salah satu dari allowed_roles
+        // 3. Cek apakah user memiliki salah satu dari allowed_roles
         return $user->hasAnyRole($category->allowed_roles);
     }
 }
