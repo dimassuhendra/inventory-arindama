@@ -5,12 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Informasi Produk - {{ $product->name }}</title>
+
+    <!-- Google Fonts: Outfit & Domine -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Domine:wght@400..700&family=Outfit:wght@100..900&display=swap"
+        rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['"Outfit"', 'sans-serif'],
+                        serif: ['"Domine"', 'serif']
+                    },
                     colors: {
                         inv: {
                             primary: '#0c66c8',
@@ -98,7 +109,9 @@
             </div>
         </div>
 
-        <div class="p-3 bg-slate-200/80 border-t border-slate-300 text-center">
+        <!-- Footer dengan Logo -->
+        <div class="p-3 bg-slate-200/80 border-t border-slate-300 flex items-center justify-center gap-2">
+            <img src="{{ asset('img/Inventory.png') }}" alt="Logo" class="h-5 w-auto object-contain">
             <p class="text-[10px] font-bold text-slate-500">Mybolo Asset & Inventory System</p>
         </div>
     </div>
