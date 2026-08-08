@@ -27,8 +27,9 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/activity-logs', [ActivityLogsController::class, 'index'])->name('activity-log.index');
+    Route::get('/activity-logs', [ActivityLogsController::class, 'index'])->name('activity-logs.index');
     Route::delete('/activity-logs/{id}', [ActivityLogsController::class, 'destroy'])->name('activity-log.destroy');
+    Route::post('/activity-logs/prune', [ActivityLogsController::class, 'prune'])->name('activity-logs.prune');
     Route::get('/stock-in', [StockEntryController::class, 'index'])->name('stock-in.index');
     Route::post('/stock-in', [StockEntryController::class, 'store'])->name('stock-in.store');
     Route::put('/stock-in/{id}', [StockEntryController::class, 'update'])->name('stock-in.update');

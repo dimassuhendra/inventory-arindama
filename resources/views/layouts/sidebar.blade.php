@@ -55,7 +55,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('activity-log.index') }}" title="Log Aktivitas"
+                    <a href="{{ route('activity-logs.index') }}" title="Log Aktivitas"
                         class="flex items-center px-3.5 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('activity-log.*') ? 'bg-inv-teal/20 text-inv-mint font-semibold border-l-4 border-inv-mint' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
                         <i
                             class="fa-solid fa-clock-rotate-left text-base w-6 text-center {{ request()->routeIs('activity-log.*') ? 'text-inv-mint' : 'text-slate-400 group-hover:text-white' }}"></i>
