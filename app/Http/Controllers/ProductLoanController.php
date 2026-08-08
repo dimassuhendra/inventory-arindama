@@ -1,63 +1,46 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\{Production, Products};
+use App\Http\Requests\LoanRequest;
+use App\Services\LoanService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ProductLoanController extends Controller
 {
-    public function index()
+    protected LoanService $loanService;
+
+    public function __construct(LoanService $loanService)
     {
-        $loans = Production::with('product')->latest()->paginate(10);
-        $products = Products::where('quantity', '>', 0)->get();
-        return view('loan', compact('loans', 'products'));
+        $this->loanService = $loanService;
     }
 
-    public function store(Request $request)
+    public function index(Request $request)
     {
-        $product = Products::findOrFail($request->product_id);
+        $data = $this->loanService->getLoanPageData($request);
+        $data['pageTitle'] = 'Peminjaman Aset';
 
-        $request->validate([
-            'product_id' => 'required',
-            'quantity' => 'required|numeric|min:1|max:' . $product->quantity,
-            'borrower_name' => 'required',
-            'borrower_contact' => 'required',
-            'loan_date' => 'required|date',
-            'return_date' => 'required|date|after_or_equal:loan_date',
-        ]);
-
-        DB::transaction(function () use ($request, $product) {
-            Production::create([
-                'loan_code' => 'LNK-' . time(),
-                'product_id' => $request->product_id,
-                'borrower_name' => $request->borrower_name,
-                'borrower_contact' => $request->borrower_contact,
-                'quantity' => $request->quantity,
-                'loan_date' => $request->loan_date,
-                'return_date' => $request->return_date,
-                'status' => 'borrowed'
-            ]);
-
-            $product->decrement('quantity', $request->quantity);
-        });
-
-        return back()->with('success', 'Peminjaman berhasil dicatat.');
+        return view('loan', $data);
     }
 
-    public function returnItem($id)
+    public function store(LoanRequest $request)
     {
-        $loan = Production::findOrFail($id);
+        try {
+            $this->loanService->createLoan($request->validated());
+            return redirect()->back()->with('success', 'Transaksi peminjaman berhasil dicatat dan stok telah dipotong.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal mencatat peminjaman: ' . $e->getMessage());
+        }
+    }
 
-        DB::transaction(function () use ($loan) {
-            $loan->update([
-                'status' => 'returned',
-                'actual_return_date' => now()
-            ]);
-
-            $loan->product->increment('quantity', $loan->quantity);
-        });
-
-        return back()->with('success', 'Barang telah dikembalikan, stok pulih.');
+    public function returnItem(Request $request, $id)
+    {
+        try {
+            $returnNotes = $request->input('return_notes');
+            $this->loanService->returnLoanItem((int)$id, $returnNotes);
+            return redirect()->back()->with('success', 'Barang telah dikembalikan dan stok berhasil dipulihkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memproses pengembalian: ' . $e->getMessage());
+        }
     }
 }
