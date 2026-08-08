@@ -80,25 +80,27 @@
                     <a href="{{ route('stock-in.index') }}" title="Barang Masuk"
                         class="flex items-center px-3.5 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('stock-in.*') ? 'bg-inv-teal/20 text-inv-mint font-semibold border-l-4 border-inv-mint' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
                         <i
-                            class="fa-solid fa-arrow-down-to-bracket text-base w-6 text-center {{ request()->routeIs('stock-in.*') ? 'text-inv-mint' : 'text-slate-400 group-hover:text-white' }}"></i>
+                            class="fa-solid fa-file-import text-base w-6 text-center {{ request()->routeIs('stock-in.*') ? 'text-inv-mint' : 'text-slate-400 group-hover:text-white' }}"></i>
                         <span class="ml-3 text-xs font-medium whitespace-nowrap" x-show="!isCollapsed">Barang
                             Masuk</span>
                     </a>
                 </li>
+
                 <li>
                     <a href="{{ route('stock-out.index') }}" title="Barang Keluar"
                         class="flex items-center px-3.5 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('stock-out.*') ? 'bg-inv-teal/20 text-inv-mint font-semibold border-l-4 border-inv-mint' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
                         <i
-                            class="fa-solid fa-arrow-up-from-bracket text-base w-6 text-center {{ request()->routeIs('stock-out.*') ? 'text-inv-mint' : 'text-slate-400 group-hover:text-white' }}"></i>
+                            class="fa-solid fa-file-export text-base w-6 text-center {{ request()->routeIs('stock-out.*') ? 'text-inv-mint' : 'text-slate-400 group-hover:text-white' }}"></i>
                         <span class="ml-3 text-xs font-medium whitespace-nowrap" x-show="!isCollapsed">Barang
                             Keluar</span>
                     </a>
                 </li>
+
                 <li>
                     <a href="{{ route('loans.index') }}" title="Peminjaman"
                         class="flex items-center px-3.5 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('loans.*') ? 'bg-inv-teal/20 text-inv-mint font-semibold border-l-4 border-inv-mint' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
                         <i
-                            class="fa-solid fa-hand-holding-box text-base w-6 text-center {{ request()->routeIs('loans.*') ? 'text-inv-mint' : 'text-slate-400 group-hover:text-white' }}"></i>
+                            class="fa-solid fa-right-left text-base w-6 text-center {{ request()->routeIs('loans.*') ? 'text-inv-mint' : 'text-slate-400 group-hover:text-white' }}"></i>
                         <span class="ml-3 text-xs font-medium whitespace-nowrap" x-show="!isCollapsed">Peminjaman
                             Aset</span>
                     </a>
@@ -161,7 +163,8 @@
                         class="flex items-center px-3.5 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('users.*') ? 'bg-inv-teal/20 text-inv-mint font-semibold border-l-4 border-inv-mint' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
                         <i
                             class="fa-solid fa-users-gear text-base w-6 text-center {{ request()->routeIs('users.*') ? 'text-inv-mint' : 'text-slate-400 group-hover:text-white' }}"></i>
-                        <span class="ml-3 text-xs font-medium whitespace-nowrap" x-show="!isCollapsed">Manajemen Pengguna</span>
+                        <span class="ml-3 text-xs font-medium whitespace-nowrap" x-show="!isCollapsed">Manajemen
+                            Pengguna</span>
                     </a>
                 </li>
             </ul>

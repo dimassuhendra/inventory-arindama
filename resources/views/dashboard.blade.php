@@ -91,7 +91,7 @@
         </div>
 
         <!-- BARIS 2: KARTU ANALISIS TAMBAHAN BERWARNA -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
 
             <!-- Health Rate Card (Emerald Fresh Gradient) -->
             <div
@@ -127,10 +127,10 @@
                 </div>
                 <div
                     class="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center text-lg shadow-sm relative z-10">
-                    <i class="fa-solid fa-arrow-up-right-dots"></i>
+                    <i class="fa-solid fa-right-left"></i>
                 </div>
                 <i
-                    class="fa-solid fa-chart-line-up absolute -right-2 -bottom-2 text-5xl text-white/10 group-hover:scale-110 transition-transform"></i>
+                    class="fa-solid fa-chart-line absolute -right-2 -bottom-2 text-5xl text-white/10 group-hover:scale-110 transition-transform"></i>
             </div>
 
             <!-- Overdue Loans Card (Rose Warning Gradient) -->
@@ -152,7 +152,7 @@
             </div>
 
             <!-- Cart Requests Pending (Deep Navy & Box Blue Gradient) -->
-            <div
+            {{-- <div
                 class="bg-gradient-to-br from-[#091e3a] to-[#2563eb] p-4 rounded-2xl shadow-md text-white flex items-center justify-between relative overflow-hidden group">
                 <div class="relative z-10">
                     <p class="text-[10px] font-bold text-blue-200 uppercase tracking-widest">Antrean Permintaan</p>
@@ -167,7 +167,7 @@
                 </div>
                 <i
                     class="fa-solid fa-clipboard-list-check absolute -right-2 -bottom-2 text-5xl text-white/10 group-hover:scale-110 transition-transform"></i>
-            </div>
+            </div> --}}
 
         </div>
 
@@ -214,8 +214,7 @@
                         <h3 class="font-serif font-bold text-slate-800 text-base">Top 5 Barang Fast Moving</h3>
                         <p class="text-[11px] text-slate-500">Paling sering keluar/dipakai</p>
                     </div>
-                    <div
-                        class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xs">
+                    <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-xs">
                         <i class="fa-solid fa-fire"></i>
                     </div>
                 </div>
