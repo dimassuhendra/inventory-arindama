@@ -2,87 +2,66 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function index()
+    protected UserService $userService;
+
+    public function __construct(UserService $userService)
     {
-        $query = User::with('roles');
-
-        // Jika yang login BUKAN akun maintenance (ID 6), maka sembunyikan ID 6
-        if (auth()->id() !== 6) {
-            $query->where('id', '!=', 6);
-        }
-
-        $users = $query->paginate(10);
-        $roles = Role::all();
-
-        return view('users', compact('users', 'roles'));
+        $this->userService = $userService;
     }
 
-    public function store(Request $request)
+    public function index(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
-            'department' => 'required|string|max:255',
-            'role' => 'required|exists:roles,name',
-        ]);
+        $data = $this->userService->getUserPageData($request);
+        $data['pageTitle'] = 'Manajemen Pengguna & Akses';
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'department' => $request->department,
-        ]);
-
-        // Assign role ke user (menggunakan fungsi bawaan Spatie)
-        $user->assignRole($request->role);
-
-        return redirect()->route('users.index')->with('success', 'Pengguna baru berhasil ditambahkan.');
+        return view('users', $data);
     }
 
-    public function update(Request $request, User $user)
+    public function store(UserRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'department' => 'required|string|max:255',
-            'role' => 'required|exists:roles,name',
-        ]);
-
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'department' => $request->department,
-        ]);
-
-        // Jika password diisi, maka update password
-        if ($request->filled('password')) {
-            $user->update([
-                'password' => Hash::make($request->password),
-            ]);
+        try {
+            $this->userService->createUser($request->validated());
+            return redirect()->route('users.index')->with('success', 'Pengguna baru berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
+    }
 
-        // Sinkronisasi role agar terganti dengan yang baru
-        $user->syncRoles([$request->role]);
+    public function update(UserRequest $request, User $user)
+    {
+        try {
+            $this->userService->updateUser($user, $request->validated());
+            return redirect()->route('users.index')->with('success', 'Data pengguna berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Update gagal: ' . $e->getMessage());
+        }
+    }
 
-        return redirect()->route('users.index')->with('success', 'Data pengguna berhasil diperbarui.');
+    public function toggleStatus(User $user)
+    {
+        try {
+            $this->userService->toggleUserStatus($user);
+            $statusText = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
+            return redirect()->back()->with('success', "Status pengguna {$user->name} berhasil {$statusText}.");
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function destroy(User $user)
     {
-        // Mencegah admin menghapus akunnya sendiri yang sedang dipakai
-        if (auth()->id() === $user->id) {
-            return redirect()->route('users.index')->with('error', 'Anda tidak dapat menghapus akun Anda sendiri saat sedang login.');
+        try {
+            $this->userService->deleteUser($user);
+            return redirect()->route('users.index')->with('success', 'Pengguna berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('users.index')->with('error', $e->getMessage());
         }
-
-        $user->delete();
-        return redirect()->route('users.index')->with('success', 'Pengguna berhasil dihapus.');
     }
 }
