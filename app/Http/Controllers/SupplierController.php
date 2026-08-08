@@ -2,47 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Suppliers; // Pastikan Model Supplier sudah ada
+use App\Http\Requests\SupplierRequest;
+use App\Services\SupplierService;
 use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    public function index()
+    protected SupplierService $supplierService;
+
+    public function __construct(SupplierService $supplierService)
     {
-        $suppliers = Suppliers::latest()->paginate(10);
-        return view('suppliers', compact('suppliers'));
+        $this->supplierService = $supplierService;
     }
 
-    public function store(Request $request)
+    public function index(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'telp' => 'required|string|max:20',
-            'address' => 'required|string',
-        ]);
+        $data = $this->supplierService->getSupplierPageData($request);
+        $data['pageTitle'] = 'Master Supplier';
 
-        Suppliers::create($request->all());
-        return redirect()->back()->with('success', 'Supplier berhasil ditambahkan.');
+        return view('suppliers', $data);
     }
 
-    public function update(Request $request, $id)
+    public function store(SupplierRequest $request)
     {
-        $supplier = Suppliers::findOrFail($id);
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'telp' => 'nullable|string|max:20',
-            'address' => 'nullable|string',
-        ]);
+        try {
+            $this->supplierService->createSupplier($request->validated());
+            return redirect()->back()->with('success', 'Supplier berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+        }
+    }
 
-        $supplier->update($request->all());
-        return redirect()->back()->with('success', 'Data supplier berhasil diperbarui.');
+    public function update(SupplierRequest $request, $id)
+    {
+        try {
+            $this->supplierService->updateSupplier((int)$id, $request->validated());
+            return redirect()->back()->with('success', 'Data supplier berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+        }
     }
 
     public function destroy($id)
     {
-        $supplier = Suppliers::findOrFail($id);
-        // Proteksi jika supplier sudah terikat dengan transaksi barang masuk
-        $supplier->delete();
-        return redirect()->back()->with('success', 'Supplier berhasil dihapus.');
+        try {
+            $this->supplierService->deleteSupplier((int)$id);
+            return redirect()->back()->with('success', 'Supplier berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 }
