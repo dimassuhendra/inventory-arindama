@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
     // Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     // Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
     // Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
-    
+
     Route::get('/products/template', [ProductController::class, 'template'])->name('products.template');
     Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
     Route::get('/products/export', [ProductController::class, 'export'])->name('products.export');
@@ -59,5 +59,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('suppliers', SupplierController::class);
     Route::resource('users', UserController::class);
     Route::put('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+
+    Route::middleware(['auth', 'role:Super Admin'])->group(function () {
+        Route::post('/roles', [UserController::class, 'storeRole'])->name('roles.store');
+        Route::put('/roles/{role}', [UserController::class, 'updateRole'])->name('roles.update');
+        Route::delete('/roles/{role}', [UserController::class, 'destroyRole'])->name('roles.destroy');
+    });
+    
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });

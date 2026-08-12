@@ -3,20 +3,29 @@
 @section('content')
     <div class="space-y-6">
 
-        <!-- 1. HEADER & ACTION BUTTON -->
+        <!-- 1. HEADER & ACTION BUTTONS -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
                 <h2 class="text-xl lg:text-2xl font-serif font-bold text-slate-800">Manajemen Pengguna</h2>
                 <p class="text-xs text-slate-500 mt-1">Kelola kredensial, departemen, dan penugasan peran (role) sistem</p>
             </div>
 
-            <button onclick="openModal('add')"
-                class="bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 font-bold text-xs cursor-pointer">
-                <i class="fa-solid fa-user-plus"></i> Tambah Pengguna Baru
-            </button>
+            <div class="flex items-center gap-2">
+                @hasrole('Super Admin')
+                    <button onclick="openRoleModal()"
+                        class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 font-bold text-xs cursor-pointer">
+                        <i class="fa-solid fa-user-shield"></i> Kelola Role
+                    </button>
+                @endhasrole
+
+                <button onclick="openModal('add')"
+                    class="bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 font-bold text-xs cursor-pointer">
+                    <i class="fa-solid fa-user-plus"></i> Tambah Pengguna Baru
+                </button>
+            </div>
         </div>
 
-        <!-- 2. MINI ANALYTICS BAR (3 CARDS PALET INV) -->
+        <!-- 2. MINI ANALYTICS BAR -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <!-- Total Users -->
             <div
@@ -82,7 +91,6 @@
         <div class="bg-slate-200/60 backdrop-blur-md p-4 rounded-2xl border border-slate-300/80">
             <form method="GET" action="{{ route('users.index') }}"
                 class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-                <!-- Search Bar -->
                 <div class="relative sm:col-span-5">
                     <i
                         class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -97,7 +105,6 @@
                     @endif
                 </div>
 
-                <!-- Filter Role -->
                 <div class="sm:col-span-4">
                     <select name="role" onchange="this.form.submit()"
                         class="w-full bg-slate-100 border border-slate-300 text-slate-700 text-xs rounded-xl p-2 outline-none focus:border-inv-teal">
@@ -110,7 +117,6 @@
                     </select>
                 </div>
 
-                <!-- Per Page -->
                 <div class="sm:col-span-3 flex items-center justify-end gap-2">
                     <span class="text-[11px] text-slate-500 font-medium">Baris:</span>
                     <select name="per_page" onchange="this.form.submit()"
@@ -148,7 +154,6 @@
                     <tbody class="divide-y divide-slate-300/60">
                         @forelse($users as $user)
                             <tr class="hover:bg-slate-300/40 transition-colors">
-                                <!-- Info Profil -->
                                 <td class="px-5 py-3.5 flex items-center gap-3">
                                     <div
                                         class="w-9 h-9 rounded-full border border-slate-300 overflow-hidden bg-white shrink-0 shadow-sm">
@@ -161,7 +166,6 @@
                                     </div>
                                 </td>
 
-                                <!-- Departemen -->
                                 <td class="px-5 py-3.5 text-xs text-slate-700 font-semibold">
                                     <span
                                         class="bg-slate-300/80 text-slate-700 px-2.5 py-1 rounded-lg text-[10px] border border-slate-300">
@@ -170,7 +174,6 @@
                                     </span>
                                 </td>
 
-                                <!-- Role -->
                                 <td class="px-5 py-3.5 text-center">
                                     @foreach ($user->roles as $role)
                                         <span
@@ -181,7 +184,6 @@
                                     @endforeach
                                 </td>
 
-                                <!-- Toggle Status Aktif -->
                                 <td class="px-5 py-3.5 text-center">
                                     @if (auth()->id() !== $user->id)
                                         <form action="{{ route('users.toggle-status', $user->id) }}" method="POST">
@@ -202,7 +204,6 @@
                                     @endif
                                 </td>
 
-                                <!-- Aksi -->
                                 <td class="px-5 py-3.5 text-center">
                                     <div class="flex justify-center items-center gap-1.5">
                                         <button
@@ -250,12 +251,11 @@
             @endif
         </div>
 
-        <!-- 5. MODAL FORM USER -->
+        <!-- 5. MODAL USER -->
         <div id="modalUser"
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
             <div
                 class="bg-slate-100 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-300 transform transition-all">
-
                 <div
                     class="bg-gradient-to-r from-inv-teal to-inv-primary p-5 text-white flex justify-between items-center">
                     <h3 id="modalTitle" class="font-serif font-bold text-base">Pendaftaran Pengguna Baru</h3>
@@ -324,7 +324,6 @@
                         </div>
                     </div>
 
-                    <!-- Checkbox Status Aktif -->
                     <div class="flex items-center gap-2 pt-1">
                         <input type="checkbox" name="is_active" id="user_is_active" value="1" checked
                             class="w-4 h-4 text-inv-teal rounded border-slate-300 focus:ring-inv-teal cursor-pointer">
@@ -340,6 +339,91 @@
                 </form>
             </div>
         </div>
+
+        <!-- 6. MODAL KELOLA ROLE (KHUSUS SUPER ADMIN) -->
+        @hasrole('Super Admin')
+            <div id="modalRole"
+                class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+                <div
+                    class="bg-slate-100 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-300 transform transition-all">
+                    <div class="bg-slate-800 p-5 text-white flex justify-between items-center">
+                        <h3 class="font-serif font-bold text-base flex items-center gap-2">
+                            <i class="fa-solid fa-user-shield text-amber-400"></i> Kelola Role & Hak Akses
+                        </h3>
+                        <button onclick="closeRoleModal()" class="text-white/70 hover:text-white transition cursor-pointer">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-6 space-y-5">
+                        <!-- Form Tambah / Edit Role -->
+                        <form id="roleForm" method="POST" action="{{ route('roles.store') }}" class="flex gap-2">
+                            @csrf
+                            <input type="hidden" name="_method" id="roleFormMethod" value="POST">
+                            <input type="text" name="name" id="role_name" required placeholder="Nama Role Baru..."
+                                class="flex-1 bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-800 outline-none focus:border-slate-800">
+                            <button type="submit" id="btnRoleSubmit"
+                                class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer shrink-0 transition">
+                                + Tambah Role
+                            </button>
+                            <button type="button" id="btnCancelRoleEdit" onclick="resetRoleForm()"
+                                class="hidden bg-slate-300 hover:bg-slate-400 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs cursor-pointer shrink-0 transition">
+                                Batal
+                            </button>
+                        </form>
+
+                        <!-- Daftar Role -->
+                        <div class="border border-slate-200 rounded-xl overflow-hidden bg-white max-h-60 overflow-y-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead class="bg-slate-200 text-slate-600 text-[10px] uppercase font-bold sticky top-0">
+                                    <tr>
+                                        <th class="px-4 py-2">Nama Role</th>
+                                        <th class="px-4 py-2 text-center">Pengguna</th>
+                                        <th class="px-4 py-2 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100 text-xs text-slate-700">
+                                    @foreach ($roles as $r)
+                                        <tr class="hover:bg-slate-50">
+                                            <td class="px-4 py-2.5 font-semibold text-slate-800">{{ $r->name }}</td>
+                                            <td class="px-4 py-2.5 text-center">
+                                                <span
+                                                    class="bg-slate-100 px-2 py-0.5 rounded-full text-[10px] font-bold text-slate-600">
+                                                    {{ $r->users_count }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-2.5 text-center">
+                                                @if ($r->name !== 'Super Admin')
+                                                    <div class="flex justify-center items-center gap-2">
+                                                        <button type="button"
+                                                            onclick="editRole({{ $r->id }}, '{{ addslashes($r->name) }}')"
+                                                            class="text-amber-600 hover:text-amber-700 text-xs font-bold cursor-pointer"
+                                                            title="Edit Role">
+                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                        </button>
+                                                        <form action="{{ route('roles.destroy', $r->id) }}" method="POST"
+                                                            onsubmit="return confirm('Hapus role {{ addslashes($r->name) }}?')">
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit"
+                                                                class="text-rose-600 hover:text-rose-700 text-xs font-bold cursor-pointer"
+                                                                title="Hapus Role">
+                                                                <i class="fa-solid fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                @else
+                                                    <span class="text-[10px] text-slate-400 italic">Sistem</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endhasrole
 
     </div>
 
@@ -410,11 +494,53 @@
             document.getElementById('modalUser').classList.add('hidden');
         }
 
+        // --- JS Modal Role Management ---
+        function openRoleModal() {
+            document.getElementById('modalRole').classList.remove('hidden');
+        }
+
+        function closeRoleModal() {
+            document.getElementById('modalRole').classList.add('hidden');
+            resetRoleForm();
+        }
+
+        function editRole(id, name) {
+            const form = document.getElementById('roleForm');
+            const method = document.getElementById('roleFormMethod');
+            const inputName = document.getElementById('role_name');
+            const btnSubmit = document.getElementById('btnRoleSubmit');
+            const btnCancel = document.getElementById('btnCancelRoleEdit');
+
+            form.action = `/roles/${id}`;
+            method.value = 'PUT';
+            inputName.value = name;
+            btnSubmit.innerText = 'Update';
+            btnSubmit.className =
+                'bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer shrink-0 transition';
+            btnCancel.classList.remove('hidden');
+        }
+
+        function resetRoleForm() {
+            const form = document.getElementById('roleForm');
+            const method = document.getElementById('roleFormMethod');
+            const inputName = document.getElementById('role_name');
+            const btnSubmit = document.getElementById('btnRoleSubmit');
+            const btnCancel = document.getElementById('btnCancelRoleEdit');
+
+            form.action = "{{ route('roles.store') }}";
+            method.value = 'POST';
+            inputName.value = '';
+            btnSubmit.innerText = '+ Tambah Role';
+            btnSubmit.className =
+                'bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer shrink-0 transition';
+            btnCancel.classList.add('hidden');
+        }
+
         window.onclick = function(event) {
-            const modal = document.getElementById('modalUser');
-            if (event.target == modal) {
-                closeModal();
-            }
+            const modalUser = document.getElementById('modalUser');
+            const modalRole = document.getElementById('modalRole');
+            if (event.target == modalUser) closeModal();
+            if (event.target == modalRole) closeRoleModal();
         }
     </script>
 @endsection

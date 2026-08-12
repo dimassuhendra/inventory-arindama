@@ -60,7 +60,7 @@ class UserService
 
         return [
             'users' => $users,
-            'roles' => Role::orderBy('name', 'asc')->get(),
+            'roles' => Role::withCount('users')->orderBy('name', 'asc')->get(),
             'total_users_count' => $totalUsersCount,
             'active_users_count' => $activeUsersCount,
             'top_user_name' => $topUser ? $topUser->name : '-',
@@ -129,5 +129,50 @@ class UserService
         }
 
         return $user->delete();
+    }
+
+    // ==========================================
+    // ROLE MANAGEMENT METHODS (CRUD ROLE)
+    // ==========================================
+
+    public function createRole(string $name): Role
+    {
+        $existing = Role::where('name', $name)->first();
+        if ($existing) {
+            throw new \Exception("Role '{$name}' sudah ada.");
+        }
+
+        return Role::create([
+            'name' => $name,
+            'guard_name' => 'web'
+        ]);
+    }
+
+    public function updateRole(Role $role, string $name): Role
+    {
+        if ($role->name === 'Super Admin') {
+            throw new \Exception("Role 'Super Admin' tidak dapat diubah namanya.");
+        }
+
+        $existing = Role::where('name', $name)->where('id', '!=', $role->id)->first();
+        if ($existing) {
+            throw new \Exception("Role '{$name}' sudah digunakan.");
+        }
+
+        $role->update(['name' => $name]);
+        return $role;
+    }
+
+    public function deleteRole(Role $role): bool
+    {
+        if ($role->name === 'Super Admin') {
+            throw new \Exception("Role 'Super Admin' adalah role bawaan sistem dan tidak dapat dihapus.");
+        }
+
+        if ($role->users()->count() > 0) {
+            throw new \Exception("Role '{$role->name}' tidak dapat dihapus karena masih digunakan oleh " . $role->users()->count() . " pengguna.");
+        }
+
+        return $role->delete();
     }
 }
