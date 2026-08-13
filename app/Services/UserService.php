@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\User;
+use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +17,7 @@ class UserService
         $perPage = $request->input('per_page', 10);
 
         // 1. Query Utama
-        $query = User::with(['roles', 'stockEntries', 'stockExits'])
+        $query = Users::with(['roles', 'stockEntries', 'stockExits'])
             ->withCount(['stockEntries', 'stockExits']);
 
         // Proteksi Akun Maintenance (Sembunyikan ID 6 jika bukan dikelola oleh ID 6)
@@ -45,7 +45,7 @@ class UserService
         $users = $query->latest()->paginate($limit)->appends($request->all());
 
         // Mini Analytics Data
-        $allUsers = User::withCount(['stockEntries', 'stockExits'])->get();
+        $allUsers = Users::withCount(['stockEntries', 'stockExits'])->get();
         if (auth()->id() !== 6) {
             $allUsers = $allUsers->where('id', '!=', 6);
         }
@@ -68,10 +68,10 @@ class UserService
         ];
     }
 
-    public function createUser(array $data): User
+    public function createUser(array $data): Users
     {
         return DB::transaction(function () use ($data) {
-            $user = User::create([
+            $user = Users::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
@@ -85,7 +85,7 @@ class UserService
         });
     }
 
-    public function updateUser(User $user, array $data): User
+    public function updateUser(Users $user, array $data): Users
     {
         return DB::transaction(function () use ($user, $data) {
             $updateData = [
@@ -106,7 +106,7 @@ class UserService
         });
     }
 
-    public function toggleUserStatus(User $user): bool
+    public function toggleUserStatus(Users $user): bool
     {
         if (auth()->id() === $user->id) {
             throw new \Exception('Anda tidak dapat menonaktifkan akun Anda sendiri.');
@@ -116,7 +116,7 @@ class UserService
         return $user->save();
     }
 
-    public function deleteUser(User $user): bool
+    public function deleteUser(Users $user): bool
     {
         if (auth()->id() === $user->id) {
             throw new \Exception('Anda tidak dapat menghapus akun Anda sendiri saat sedang login.');
