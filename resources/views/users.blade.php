@@ -143,9 +143,9 @@
                             <th
                                 class="px-5 py-3.5 text-[10px] font-bold text-slate-600 uppercase tracking-widest text-center">
                                 Hak Akses (Role)</th>
-                            <th
+                            {{-- <th
                                 class="px-5 py-3.5 text-[10px] font-bold text-slate-600 uppercase tracking-widest text-center">
-                                Status</th>
+                                Status</th> --}}
                             <th
                                 class="px-5 py-3.5 text-[10px] font-bold text-slate-600 uppercase tracking-widest text-center">
                                 Aksi</th>
@@ -184,7 +184,7 @@
                                     @endforeach
                                 </td>
 
-                                <td class="px-5 py-3.5 text-center">
+                                {{-- <td class="px-5 py-3.5 text-center">
                                     @if (auth()->id() !== $user->id)
                                         <form action="{{ route('users.toggle-status', $user->id) }}" method="POST">
                                             @csrf @method('PATCH')
@@ -202,7 +202,7 @@
                                             <i class="fa-solid fa-circle-check"></i> Aktif (Anda)
                                         </span>
                                     @endif
-                                </td>
+                                </td> --}}
 
                                 <td class="px-5 py-3.5 text-center">
                                     <div class="flex justify-center items-center gap-1.5">

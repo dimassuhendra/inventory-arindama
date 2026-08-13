@@ -10,6 +10,8 @@ class Users extends Authenticatable
 {
     use Notifiable, HasRoles;
 
+    protected $guard_name = 'web';
+
     protected $fillable = [
         'name',
         'email',
@@ -27,5 +29,15 @@ class Users extends Authenticatable
     public function activityLogs()
     {
         return $this->hasMany(ActivityLogs::class, 'user_id');
+    }
+
+    public function stockEntries()
+    {
+        return $this->hasMany(StockEntries::class, 'user_id');
+    }
+
+    public function stockExits()
+    {
+        return $this->hasMany(StockExits::class, 'user_id');
     }
 }

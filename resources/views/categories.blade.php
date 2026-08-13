@@ -11,11 +11,13 @@
             </div>
 
             <!-- SEMUA USER BISA TAMBAH KATEGORI -->
-            <button @click="openCategoryModal('add')"
-                class="bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white px-5 py-3 rounded-2xl shadow-lg shadow-inv-teal/20 transition-all flex items-center justify-center gap-2.5 font-bold text-xs tracking-wide cursor-pointer">
-                <i class="fa-solid fa-plus text-sm"></i>
-                <span>Tambah Kategori Baru</span>
-            </button>
+            @role('Super Admin')
+                <button @click="openCategoryModal('add')"
+                    class="bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white px-5 py-3 rounded-2xl shadow-lg shadow-inv-teal/20 transition-all flex items-center justify-center gap-2.5 font-bold text-xs tracking-wide cursor-pointer">
+                    <i class="fa-solid fa-plus text-sm"></i>
+                    <span>Tambah Kategori Baru</span>
+                </button>
+            @endrole
         </div>
 
         <!-- 2. MINI ANALYTICS BAR (3 CARDS BERWARNA TEMA INV) -->
