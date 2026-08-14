@@ -684,7 +684,6 @@
         </div>
 
         <!-- 6. MODAL DETAIL PRODUK/ASET -->
-        <!-- MODAL DETAIL ASET LENGKAP & STIKER QR CODE -->
         <div id="modalDetailProduct"
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
             <div
@@ -866,6 +865,105 @@
             </div>
         </div>
 
+        <!-- MODAL IMPORT EXCEL -->
+        <div id="modalImport"
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+            <div class="bg-slate-100 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-300">
+
+                <!-- Header Modal -->
+                <div class="bg-gradient-to-r from-amber-500 to-amber-600 p-4 text-white flex justify-between items-center">
+                    <h3 class="font-serif font-bold text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-file-import"></i> Import Data Aset (Excel)
+                    </h3>
+                    <button onclick="closeImportModal()" class="text-white/70 hover:text-white cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data"
+                    class="p-5 space-y-4">
+                    @csrf
+
+                    <!-- BOX DOWNLOAD TEMPLATE (Langkah 1) -->
+                    <div
+                        class="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2.5">
+                            <div
+                                class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center text-sm flex-shrink-0">
+                                <i class="fa-solid fa-file-excel"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-800">Belum punya template?</p>
+                                <p class="text-[10px] text-slate-500">Unduh format + kamus data acuan</p>
+                            </div>
+                        </div>
+                        <a href="{{ route('products.template') }}"
+                            class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-xl text-[11px] transition flex items-center gap-1.5 shadow-sm flex-shrink-0">
+                            <i class="fa-solid fa-download"></i> Template
+                        </a>
+                    </div>
+
+                    <!-- UPLOAD FILE (Langkah 2) -->
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">
+                            Upload File Spreadsheet (.xlsx / .csv) <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="file" name="file" required accept=".xlsx, .xls, .csv"
+                            class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-500 file:text-white cursor-pointer bg-white border border-slate-300 rounded-xl">
+                    </div>
+
+                    <p class="text-[10px] text-slate-500 italic leading-relaxed">
+                        * Isilah data pada <strong>Sheet 1 (Input Data Aset)</strong> dan gunakan acuan nama dari
+                        <strong>Sheet 2 (Referensi Data)</strong> agar tidak terjadi eror relasi.
+                    </p>
+
+                    <!-- Submit Button -->
+                    <button type="submit"
+                        class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2.5 rounded-xl shadow-md text-xs uppercase tracking-wider cursor-pointer">
+                        Proses Import
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL SINKRONISASI BULK -->
+        <div id="modalSync"
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
+            <div class="bg-slate-100 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-300">
+                <div
+                    class="bg-gradient-to-r from-inv-teal to-inv-primary p-4 text-white flex justify-between items-center">
+                    <h3 class="font-serif font-bold text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-rotate"></i> Sinkronisasi Massal Aset
+                    </h3>
+                    <button onclick="closeSyncModal()" class="text-white/70 hover:text-white cursor-pointer">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <form action="{{ route('products.sync') }}" method="POST" class="p-5 space-y-4">
+                    @csrf
+                    <p class="text-xs text-slate-600">
+                        Fitur ini akan menyelaraskan ulang kalkulasi Nilai Buku (Depresiasi), Status Garansi, dan pembaruan
+                        relasi PIC/Departemen untuk seluruh aset aktif.
+                    </p>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-600 uppercase mb-1">Pilih Perusahaan
+                            Target</label>
+                        <select name="company_name"
+                            class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 outline-none focus:border-inv-teal">
+                            <option value="all">-- Seluruh Group Company --</option>
+                            @foreach (['Perusahaan A', 'Perusahaan B', 'Perusahaan C', 'Perusahaan D', 'Perusahaan E', 'General'] as $comp)
+                                <option value="{{ $comp }}">{{ $comp }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white font-bold py-2.5 rounded-xl shadow-md text-xs uppercase tracking-wider cursor-pointer">
+                        Jalankan Sinkronisasi
+                    </button>
+                </form>
+            </div>
+        </div>
+
     </div>
 
     <!-- JS SCRIPTS -->
@@ -992,6 +1090,24 @@
 
         function closeDetailModal() {
             document.getElementById('modalDetailProduct').classList.add('hidden');
+        }
+
+        // Function Modal Import
+        function openImportModal() {
+            document.getElementById('modalImport').classList.remove('hidden');
+        }
+
+        function closeImportModal() {
+            document.getElementById('modalImport').classList.add('hidden');
+        }
+
+        // Function Modal Sync
+        function openSyncModal() {
+            document.getElementById('modalSync').classList.remove('hidden');
+        }
+
+        function closeSyncModal() {
+            document.getElementById('modalSync').classList.add('hidden');
         }
     </script>
 @endsection

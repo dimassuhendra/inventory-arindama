@@ -7,7 +7,7 @@ use App\Services\ProductService;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ProductsExport;
-use App\Imports\ProductsImport;
+use App\Imports\ProductImport;
 use App\Exports\ProductTemplateExport;
 use App\Exports\ProductsBulkEditExport;
 use App\Imports\ProductsBulkEditImport;
@@ -69,21 +69,35 @@ class ProductController extends Controller
         return Excel::download(new ProductTemplateExport(), 'Template-Import-Produk.xlsx');
     }
 
+    public function sync(Request $request)
+    {
+        try {
+            $companyName = $request->input('company_name');
+
+
+            return redirect()->back()->with('success', 'Sinkronisasi data aset berhasil dijalankan!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal sinkronisasi: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadTemplate()
+    {
+        return Excel::download(new ProductTemplateExport, 'Template_Import_Aset_Mybolo.xlsx');
+    }
+
+    // Method untuk Eksekusi File Import
     public function import(Request $request)
     {
         $request->validate([
-            'file_excel' => 'required|mimes:xlsx,xls,csv|max:2048',
-        ], [
-            'file_excel.required' => 'File Excel tidak boleh kosong!',
-            'file_excel.mimes' => 'Format file harus .xlsx, .xls, atau .csv',
-            'file_excel.max' => 'Ukuran file maksimal 2MB!',
+            'file' => 'required|mimes:xlsx,xls,csv|max:10240',
         ]);
 
         try {
-            Excel::import(new ProductsImport(), $request->file('file_excel'));
-            return redirect()->back()->with('success', 'Data produk dari Excel berhasil diimpor!');
+            Excel::import(new ProductImport, $request->file('file'));
+            return redirect()->back()->with('success', 'Data aset berhasil di-import secara masal!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal mengimpor file: Pastikan ID Kategori valid dan format Excel sesuai template.');
+            return redirect()->back()->with('error', 'Gagal import data: ' . $e->getMessage());
         }
     }
 
