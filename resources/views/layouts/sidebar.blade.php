@@ -130,7 +130,8 @@
                 </button>
 
                 <ul x-show="open || isCollapsed" x-collapse class="space-y-1.5 mt-2">
-                    <!-- Data Produk -->
+
+                    <!-- 1. Data Produk -->
                     <li>
                         <a href="{{ route('products.index') }}" title="Data Produk"
                             class="flex items-center px-3.5 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('products.*') ? 'bg-inv-teal/20 text-inv-mint font-semibold border-l-4 border-inv-mint' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
@@ -141,7 +142,7 @@
                         </a>
                     </li>
 
-                    <!-- Kategori Barang -->
+                    <!-- 2. Kategori Barang -->
                     <li>
                         <a href="{{ route('categories.index') }}" title="Kategori"
                             class="flex items-center px-3.5 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('categories.*') ? 'bg-inv-teal/20 text-inv-mint font-semibold border-l-4 border-inv-mint' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
@@ -152,7 +153,29 @@
                         </a>
                     </li>
 
-                    <!-- Data Supplier -->
+                    <!-- 3. Data Departemen (NEW) -->
+                    <li>
+                        <a href="{{ route('departments.index') }}" title="Departemen"
+                            class="flex items-center px-3.5 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('departments.*') ? 'bg-inv-teal/20 text-inv-mint font-semibold border-l-4 border-inv-mint' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                            <i
+                                class="fa-solid fa-sitemap text-base w-6 text-center {{ request()->routeIs('departments.*') ? 'text-inv-mint' : 'text-slate-400 group-hover:text-white' }}"></i>
+                            <span class="ml-3 text-xs font-medium whitespace-nowrap" x-show="!isCollapsed">Data
+                                Departemen</span>
+                        </a>
+                    </li>
+
+                    <!-- 4. Data PIC / Penanggung Jawab (NEW) -->
+                    <li>
+                        <a href="{{ route('pics.index') }}" title="Data PIC"
+                            class="flex items-center px-3.5 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('pics.*') ? 'bg-inv-teal/20 text-inv-mint font-semibold border-l-4 border-inv-mint' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
+                            <i
+                                class="fa-solid fa-id-card-clip text-base w-6 text-center {{ request()->routeIs('pics.*') ? 'text-inv-mint' : 'text-slate-400 group-hover:text-white' }}"></i>
+                            <span class="ml-3 text-xs font-medium whitespace-nowrap" x-show="!isCollapsed">Data
+                                PIC</span>
+                        </a>
+                    </li>
+
+                    <!-- 5. Data Supplier -->
                     <li>
                         <a href="{{ route('suppliers.index') }}" title="Supplier"
                             class="flex items-center px-3.5 py-3 rounded-xl transition-all duration-200 group {{ request()->routeIs('suppliers.*') ? 'bg-inv-teal/20 text-inv-mint font-semibold border-l-4 border-inv-mint' : 'text-slate-300 hover:text-white hover:bg-white/10' }}">
@@ -162,6 +185,7 @@
                                 Supplier</span>
                         </a>
                     </li>
+
                 </ul>
             </div>
         @endif
