@@ -11,13 +11,11 @@
             </div>
 
             <!-- SEMUA USER BISA TAMBAH KATEGORI -->
-            @role('Super Admin')
-                <button @click="openCategoryModal('add')"
-                    class="bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white px-5 py-3 rounded-2xl shadow-lg shadow-inv-teal/20 transition-all flex items-center justify-center gap-2.5 font-bold text-xs tracking-wide cursor-pointer">
-                    <i class="fa-solid fa-plus text-sm"></i>
-                    <span>Tambah Kategori Baru</span>
-                </button>
-            @endrole
+            <button @click="openCategoryModal('add')"
+                class="bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white px-5 py-3 rounded-2xl shadow-lg shadow-inv-teal/20 transition-all flex items-center justify-center gap-2.5 font-bold text-xs tracking-wide cursor-pointer">
+                <i class="fa-solid fa-plus text-sm"></i>
+                <span>Tambah Kategori Baru</span>
+            </button>
         </div>
 
         <!-- 2. MINI ANALYTICS BAR (3 CARDS BERWARNA TEMA INV) -->
@@ -256,9 +254,10 @@
                         </div>
                     @else
                         <!-- Info untuk User Biasa -->
-                        <p class="text-[10px] text-slate-400 italic">
-                            * Kategori yang Anda buat secara otomatis berstatus <b>Public</b>.
-                        </p>
+                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-[10px] text-amber-800">
+                            <i class="fa-solid fa-circle-info text-amber-600 mr-1"></i>
+                            Kategori yang Anda buat secara otomatis akan dikunci khusus untuk <b>Role Anda</b>.
+                        </div>
                     @endif
 
                     <button type="submit"

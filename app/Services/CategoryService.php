@@ -35,24 +35,31 @@ class CategoryService
 
     public function getCategoryPageData(): array
     {
-        $categories = Category::withCount('products')
+        $user = Auth::user();
+
+        $allCategories = Category::withCount('products')
             ->with('products')
             ->orderBy('name', 'asc')
             ->get();
 
-        // 1. Mini Analytics Data
+        // 2. Filter kategori: Hanya tampilkan yang diizinkan untuk user aktif
+        $categories = $allCategories->filter(function ($cat) {
+            return self::canUserManage($cat);
+        });
+
+        // 3. Hitung Mini Analytics berdasarkan kategori yang dapat diakses user
         $totalCategories = $categories->count();
         $topCategory = $categories->sortByDesc('products_count')->first();
         $restrictedCategoriesCount = $categories->filter(function ($cat) {
             return !empty($cat->allowed_roles);
         })->count();
 
-        // 2. Roles Data sebagai Model Collection Eloquent
+        // 4. Roles Data
         $roles = \Spatie\Permission\Models\Role::orderBy('name', 'asc')->get();
 
         return [
             'categories' => $categories,
-            'roles' => $roles, // <--- Key diganti menjadi $roles
+            'roles' => $roles,
             'total_categories' => $totalCategories,
             'top_category_name' => $topCategory ? $topCategory->name : '-',
             'top_category_count' => $topCategory ? $topCategory->products_count : 0,
@@ -62,8 +69,16 @@ class CategoryService
 
     public function createCategory(array $data): Category
     {
+        $user = Auth::user();
+
+        // Jika bukan Super Admin, paksa isi 'allowed_roles' dengan daftar role milik user saat ini
+        if (!self::isSuperAdmin() && $user) {
+            $userRoles = $user->roles->pluck('name')->toArray();
+            $data['allowed_roles'] = !empty($userRoles) ? array_values($userRoles) : null;
+        }
+
         return Category::create([
-            'name' => $data['name'],
+            'name'          => $data['name'],
             'allowed_roles' => $data['allowed_roles'] ?? null,
         ]);
     }

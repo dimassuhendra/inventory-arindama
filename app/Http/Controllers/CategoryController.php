@@ -28,13 +28,7 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         try {
-            $data = $request->validated();
-
-            if (!CategoryService::isSuperAdmin()) {
-                unset($data['allowed_roles']);
-            }
-
-            Category::create($data);
+            $this->categoryService->createCategory($request->all());
 
             return redirect()->back()->with('success', 'Kategori berhasil ditambahkan.');
         } catch (\Exception $e) {
