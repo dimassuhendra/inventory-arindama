@@ -2,14 +2,19 @@
 
 namespace App\Services;
 
+use App\Services\CategoryService;
+
+use App\Models\Pic;
 use App\Models\Products;
 use App\Models\Category;
 use App\Models\Suppliers;
-use App\Services\CategoryService;
-use Illuminate\Http\Request;
+use App\Models\Department;
+use App\Models\SubCategory;
+
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProductService
 {
@@ -17,15 +22,16 @@ class ProductService
     {
         $search = $request->input('search');
         $categoryId = $request->input('category_id');
-        $stockStatus = $request->input('stock_status');
+        $companyName = $request->input('company_name');
+        $assetStatus = $request->input('asset_status');
         $perPage = $request->input('per_page', 10);
         $sortBy = $request->input('sort_by', 'created_at');
         $sortOrder = $request->input('sort_order', 'desc');
 
-        // Query Utama dengan Eager Loading
-        $query = Products::with(['category', 'supplier']);
+        // Eager Loading Relasi Lengkap
+        $query = Products::with(['category', 'subCategory', 'supplier', 'department', 'pic']);
 
-        // Filter hanya produk yang kategorinya diizinkan untuk role user saat ini
+        // Filter Kategori Berdasarkan Role
         $categories = Category::orderBy('name', 'asc')->get();
         $allowedCategoryIds = $categories->filter(function ($cat) {
             return CategoryService::canUserManage($cat);
@@ -33,81 +39,102 @@ class ProductService
 
         $query->whereIn('category_id', $allowedCategoryIds);
 
-        // 1. Filter Search
+        // Filter Search Multi-Column
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhere('brand_model', 'like', "%{$search}%")
+                    ->orWhere('serial_number', 'like', "%{$search}%")
+                    ->orWhere('po_invoice_number', 'like', "%{$search}%")
+                    ->orWhere('location', 'like', "%{$search}%")
                     ->orWhereHas('category', function ($catQ) use ($search) {
                         $catQ->where('name', 'like', "%{$search}%");
                     })
-                    ->orWhereHas('supplier', function ($supQ) use ($search) {
-                        $supQ->where('name', 'like', "%{$search}%");
+                    ->orWhereHas('pic', function ($picQ) use ($search) {
+                        $picQ->where('name', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('department', function ($deptQ) use ($search) {
+                        $deptQ->where('name', 'like', "%{$search}%");
                     });
             });
         }
 
-        // 2. Filter Kategori
+        // Filter Kategori, Perusahaan & Status
         if ($categoryId) {
             $query->where('category_id', $categoryId);
         }
-
-        // 3. Filter Status Stok
-        if ($stockStatus === 'low') {
-            $query->where('quantity', '<=', 5);
-        } elseif ($stockStatus === 'safe') {
-            $query->where('quantity', '>', 5);
-        } elseif ($stockStatus === 'used') {
-            $query->whereNotNull('first_used_at');
-        } elseif ($stockStatus === 'stored') {
-            $query->whereNull('first_used_at');
+        if ($companyName) {
+            $query->where('company_name', $companyName);
+        }
+        if ($assetStatus) {
+            $query->where('asset_status', $assetStatus);
         }
 
-        // 4. Sorting
-        $allowedSorts = ['name', 'quantity', 'created_at'];
+        // Sorting
+        $allowedSorts = ['name', 'quantity', 'created_at', 'purchase_cost'];
         if (in_array($sortBy, $allowedSorts)) {
             $query->orderBy($sortBy, $sortOrder);
         } else {
             $query->latest();
         }
 
-        // 5. Paginasi
         $limit = $perPage === 'all' ? 10000 : (int) $perPage;
         $products = $query->paginate($limit)->appends($request->all());
 
-        // 6. Mini Analytics Data
+        // 6. Mini Analytics Data (Kondisional Berdasarkan Role)
+        $user = Auth::user();
         $allProducts = Products::whereIn('category_id', $allowedCategoryIds)->get();
-        $totalProductsCount = $allProducts->count();
-        $totalQuantitySum = $allProducts->sum('quantity');
-        $lowStockCount = $allProducts->where('quantity', '<=', 5)->count();
-        $activeUsedCount = $allProducts->whereNotNull('first_used_at')->count();
 
-        // Filter list kategori pada dropdown agar hanya menampilkan kategori milik role user
+        // Variabel Analytics Default
+        $analytics = [];
+
+        if ($user && ($user->hasRole('HRGA') || $user->hasRole('Super Admin'))) {
+            // METRIK KHUSUS HRGA / SUPER ADMIN (Helicopter View & Finansial)
+            $analytics = [
+                'total_products_count' => $allProducts->count(),
+                'total_asset_value'    => $allProducts->sum('purchase_cost'),
+                'total_book_value'     => $allProducts->sum(fn($p) => $p->current_book_value),
+                'disposed_count'       => $allProducts->where('asset_status', 'Dihentikan/Afkir')->count(),
+            ];
+        } else {
+            // METRIK KHUSUS GUDANG / STAFF (Operasional & Fisik Stock)
+            $analytics = [
+                'total_physical_stock' => $allProducts->sum('quantity'),
+                'low_stock_count'      => $allProducts->where('quantity', '<=', 5)->count(),
+                'stored_in_warehouse'  => $allProducts->where('asset_status', 'Tersimpan Gudang')->count(),
+                'under_maintenance'    => $allProducts->where('asset_status', 'Dalam Perawatan')->count(),
+            ];
+        }
+
+        // Master Data Dropdown
         $allowedCategories = $categories->filter(function ($cat) {
             return CategoryService::canUserManage($cat);
         });
-        $suppliers = Suppliers::orderBy('name', 'asc')->get();
 
-        return [
-            'products' => $products,
-            'categories' => $allowedCategories,
-            'suppliers' => $suppliers,
-            'total_products_count' => $totalProductsCount,
-            'total_quantity_sum' => $totalQuantitySum,
-            'low_stock_count' => $lowStockCount,
-            'active_used_count' => $activeUsedCount,
-        ];
+        $subCategories = SubCategory::whereIn('category_id', $allowedCategoryIds)->get();
+        $suppliers     = Suppliers::orderBy('name', 'asc')->get();
+        $departments   = Department::orderBy('name', 'asc')->get();
+        $pics          = Pic::orderBy('name', 'asc')->get();
+
+        return array_merge([
+            'products'      => $products,
+            'categories'    => $allowedCategories,
+            'subCategories' => $subCategories,
+            'suppliers'     => $suppliers,
+            'departments'   => $departments,
+            'pics'          => $pics,
+        ], $analytics);
     }
 
     public function createProduct(array $data, Request $request): Products
     {
         $category = Category::findOrFail($data['category_id']);
         if (!CategoryService::canUserManage($category)) {
-            throw new \Exception('Anda tidak memiliki izin untuk menambah produk pada kategori ini.');
+            throw new \Exception('Anda tidak memiliki izin untuk menambah aset pada kategori ini.');
         }
 
         $data['slug'] = Str::slug($data['name']) . '-' . Str::random(5);
-        $data['quantity'] = !empty($data['quantity']) ? $data['quantity'] : 0;
+        $data['quantity'] = !empty($data['quantity']) ? $data['quantity'] : 1;
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('products', 'public');
@@ -122,7 +149,7 @@ class ProductService
 
         $category = Category::findOrFail($data['category_id']);
         if (!CategoryService::canUserManage($category)) {
-            throw new \Exception('Anda tidak memiliki izin untuk mengedit produk pada kategori ini.');
+            throw new \Exception('Anda tidak memiliki izin untuk mengedit aset pada kategori ini.');
         }
 
         $data['slug'] = Str::slug($data['name']);
@@ -143,7 +170,7 @@ class ProductService
         $product = Products::findOrFail($id);
 
         if (!CategoryService::canUserManage($product->category)) {
-            throw new \Exception('Anda tidak memiliki izin untuk menghapus produk pada kategori ini.');
+            throw new \Exception('Anda tidak memiliki izin untuk menghapus aset pada kategori ini.');
         }
 
         if ($product->image) {
@@ -155,9 +182,11 @@ class ProductService
 
     public function getPublicProductDetail(string $slug): array
     {
-        $product = Products::with(['category', 'supplier'])->where('slug', $slug)->firstOrFail();
+        $product = Products::with(['category', 'subCategory', 'supplier', 'department', 'pic'])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-        $supplierName = $product->supplier->name ?? 'Tidak Ada Supplier';
+        $supplierName = $product->supplier->name ?? 'Tidak Ada Vendor';
         $maskedSupplier = $supplierName;
 
         if ($product->supplier && strlen($supplierName) > 6) {
@@ -165,34 +194,8 @@ class ProductService
             $lastThree = substr($supplierName, -3);
             $maskedLen = strlen($supplierName) - 6;
             $maskedSupplier = $firstThree . str_repeat('*', $maskedLen) . $lastThree;
-        } elseif ($product->supplier) {
-            $maskedSupplier = substr($supplierName, 0, 2) . '***';
         }
 
-        $usageAge = null;
-        if ($product->first_used_at) {
-            $start = \Carbon\Carbon::parse($product->first_used_at)->startOfDay();
-            $now = \Carbon\Carbon::now()->startOfDay();
-            $diff = $start->diff($now);
-
-            $years = $diff->y;
-            $months = $diff->m;
-            $days = $diff->d;
-
-            if ($years > 0) {
-                $parts = ["{$years} Tahun"];
-                if ($months > 0) $parts[] = "{$months} Bulan";
-                if ($days > 0) $parts[] = "{$days} Hari";
-                $usageAge = implode(' ', $parts);
-            } elseif ($months > 0) {
-                $parts = ["{$months} Bulan"];
-                if ($days > 0) $parts[] = "{$days} Hari";
-                $usageAge = implode(' ', $parts);
-            } else {
-                $usageAge = $days == 0 ? 'Hari ini' : "{$days} Hari";
-            }
-        }
-
-        return compact('product', 'maskedSupplier', 'usageAge');
+        return compact('product', 'maskedSupplier');
     }
 }
