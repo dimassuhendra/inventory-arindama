@@ -25,6 +25,14 @@ class ProductService
         // Query Utama dengan Eager Loading
         $query = Products::with(['category', 'supplier']);
 
+        // Filter hanya produk yang kategorinya diizinkan untuk role user saat ini
+        $categories = Category::orderBy('name', 'asc')->get();
+        $allowedCategoryIds = $categories->filter(function ($cat) {
+            return CategoryService::canUserManage($cat);
+        })->pluck('id')->toArray();
+
+        $query->whereIn('category_id', $allowedCategoryIds);
+
         // 1. Filter Search
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -68,18 +76,21 @@ class ProductService
         $products = $query->paginate($limit)->appends($request->all());
 
         // 6. Mini Analytics Data
-        $allProducts = Products::all();
+        $allProducts = Products::whereIn('category_id', $allowedCategoryIds)->get();
         $totalProductsCount = $allProducts->count();
         $totalQuantitySum = $allProducts->sum('quantity');
         $lowStockCount = $allProducts->where('quantity', '<=', 5)->count();
         $activeUsedCount = $allProducts->whereNotNull('first_used_at')->count();
 
-        $categories = Category::orderBy('name', 'asc')->get();
+        // Filter list kategori pada dropdown agar hanya menampilkan kategori milik role user
+        $allowedCategories = $categories->filter(function ($cat) {
+            return CategoryService::canUserManage($cat);
+        });
         $suppliers = Suppliers::orderBy('name', 'asc')->get();
 
         return [
             'products' => $products,
-            'categories' => $categories,
+            'categories' => $allowedCategories,
             'suppliers' => $suppliers,
             'total_products_count' => $totalProductsCount,
             'total_quantity_sum' => $totalQuantitySum,
