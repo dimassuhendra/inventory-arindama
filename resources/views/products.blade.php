@@ -951,7 +951,7 @@
                         <select name="company_name"
                             class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 outline-none focus:border-inv-teal">
                             <option value="all">-- Seluruh Group Company --</option>
-                            @foreach (['Perusahaan A', 'Perusahaan B', 'Perusahaan C', 'Perusahaan D', 'Perusahaan E', 'General'] as $comp)
+                            @foreach (['PT Agung Putra Nirantara Mandiri', 'PT Kirana Baskara Kuwara', 'PT Lancar Anja Kuwaga', 'PT Praguwa Wahyu Astama', 'PT Teknologi Arindama Andra', 'General'] as $comp)
                                 <option value="{{ $comp }}">{{ $comp }}</option>
                             @endforeach
                         </select>

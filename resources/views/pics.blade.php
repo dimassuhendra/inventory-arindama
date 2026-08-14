@@ -174,7 +174,7 @@
                                 class="text-rose-500">*</span></label>
                         <select name="company_name" id="pic_company" onchange="filterDepartmentsByCompany()" required
                             class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 outline-none focus:border-inv-teal">
-                            @foreach (['Perusahaan A', 'Perusahaan B', 'Perusahaan C', 'Perusahaan D', 'Perusahaan E', 'General'] as $comp)
+                            @foreach (['PT Agung Putra Nirantara Mandiri', 'PT Kirana Baskara Kuwara', 'PT Lancar Anja Kuwaga', 'PT Praguwa Wahyu Astama', 'PT Teknologi Arindama Andra', 'General'] as $comp)
                                 <option value="{{ $comp }}">{{ $comp }}</option>
                             @endforeach
                         </select>

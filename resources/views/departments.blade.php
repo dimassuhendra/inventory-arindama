@@ -32,7 +32,7 @@
                     <select name="company_name" onchange="this.form.submit()"
                         class="w-full bg-slate-100 border border-slate-300 text-slate-700 text-xs rounded-xl p-2 outline-none focus:border-inv-teal">
                         <option value="">-- Semua Perusahaan --</option>
-                        @foreach (['Perusahaan A', 'Perusahaan B', 'Perusahaan C', 'Perusahaan D', 'Perusahaan E', 'General'] as $comp)
+                        @foreach (['PT Agung Putra Nirantara Mandiri', 'PT Kirana Baskara Kuwara', 'PT Lancar Anja Kuwaga', 'PT Praguwa Wahyu Astama', 'PT Teknologi Arindama Andra', 'General'] as $comp)
                             <option value="{{ $comp }}" {{ request('company_name') == $comp ? 'selected' : '' }}>
                                 {{ $comp }}</option>
                         @endforeach
