@@ -10,75 +10,132 @@ use App\Models\Production;
 use App\Models\StockExits;
 use App\Models\StockEntries;
 use App\Models\CartRequest;
+use App\Services\CategoryService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class DashboardService
 {
+    /**
+     * Helper internal: Ambil array ID kategori yang diizinkan untuk user saat ini
+     */
+    private function getAllowedCategoryIds(): array
+    {
+        return Category::all()->filter(function ($cat) {
+            return CategoryService::canUserManage($cat);
+        })->pluck('id')->toArray();
+    }
+
     public function getDashboardData(): array
     {
         $today = Carbon::today();
         $thisMonth = Carbon::now()->month;
         $thisYear = Carbon::now()->year;
 
-        // 1. Stat Cards Calculations
-        $totalProducts = Products::count();
-        $lowStockCount = Products::where('quantity', '<=', 5)->count();
+        // ID Kategori yang diizinkan untuk role user saat ini
+        $allowedCategoryIds = $this->getAllowedCategoryIds();
+
+        // Query Dasar Produk yang Diizinkan
+        $allowedProductsQuery = Products::whereIn('category_id', $allowedCategoryIds);
+
+        // 1. Stat Cards Calculations (Filtered by Role Categories)
+        $totalProducts = (clone $allowedProductsQuery)->count();
+        $lowStockCount = (clone $allowedProductsQuery)->where('quantity', '<=', 5)->count();
 
         // Stock Health Rate %
         $stockHealthRate = $totalProducts > 0
             ? round((($totalProducts - $lowStockCount) / $totalProducts) * 100)
             : 100;
 
-        // Monthly Movement (Total In vs Total Out Month)
-        $monthlyEntriesQty = StockEntries::whereMonth('entry_date', $thisMonth)
+        // Monthly Movement (Filtered by Product Category)
+        $monthlyEntriesQty = StockEntries::whereHas('product', function ($q) use ($allowedCategoryIds) {
+            $q->whereIn('category_id', $allowedCategoryIds);
+        })
+            ->whereMonth('entry_date', $thisMonth)
             ->whereYear('entry_date', $thisYear)
             ->sum('quantity');
 
-        $monthlyExitsQty = StockExits::whereMonth('exit_date', $thisMonth)
+        $monthlyExitsQty = StockExits::whereHas('product', function ($q) use ($allowedCategoryIds) {
+            $q->whereIn('category_id', $allowedCategoryIds);
+        })
+            ->whereMonth('exit_date', $thisMonth)
             ->whereYear('exit_date', $thisYear)
             ->sum('quantity');
 
-        // Overdue Loans Count
-        $overdueLoansCount = Production::where('status', 'borrowed')
+        // Overdue Loans Count (Filtered by Product Category)
+        $overdueLoansCount = Production::whereHas('product', function ($q) use ($allowedCategoryIds) {
+            $q->whereIn('category_id', $allowedCategoryIds);
+        })
+            ->where('status', 'borrowed')
             ->whereDate('return_date', '<', $today)
             ->count();
 
-        // Pending Cart Requests
-        $pendingCartRequestsCount = CartRequest::where('status', 'pending')->count();
+        // Pending Cart Requests (Filtered by Product Category)
+        $pendingCartRequestsCount = CartRequest::whereHas('items.product', function ($q) use ($allowedCategoryIds) {
+            $q->whereIn('category_id', $allowedCategoryIds);
+        })
+            ->where('status', 'pending')
+            ->count();
 
-        // 2. Chart 1 Data: Line Chart Arus Barang (6 Bulan Terakhir)
-        $monthlyFlowData = $this->getMonthlyFlowChartData();
+        // Total Borrowed Stats
+        $totalBorrowedUnits = Production::whereHas('product', function ($q) use ($allowedCategoryIds) {
+            $q->whereIn('category_id', $allowedCategoryIds);
+        })
+            ->where('status', 'borrowed')
+            ->sum('quantity');
 
-        // 3. Chart 2 Data: Donut Chart Distribusi Kategori Top 5
-        $categoryDistributionData = $this->getCategoryDistributionChartData();
+        $totalBorrowedTypes = Production::whereHas('product', function ($q) use ($allowedCategoryIds) {
+            $q->whereIn('category_id', $allowedCategoryIds);
+        })
+            ->where('status', 'borrowed')
+            ->distinct('product_id')
+            ->count('product_id');
 
-        // 4. Chart 3 Data: Bar Chart Top 5 Fast Moving Products
-        $fastMovingProductsData = $this->getFastMovingProductsData();
+        // 2. Charts Data (Filtered)
+        $monthlyFlowData = $this->getMonthlyFlowChartData($allowedCategoryIds);
+        $categoryDistributionData = $this->getCategoryDistributionChartData($allowedCategoryIds);
+        $fastMovingProductsData = $this->getFastMovingProductsData($allowedCategoryIds);
 
         return [
             // Core Stat Cards
             'total_products' => $totalProducts,
             'total_suppliers' => Suppliers::count(),
-            'total_categories' => Category::count(),
+            'total_categories' => count($allowedCategoryIds),
             'low_stock' => $lowStockCount,
-            'total_borrowed_units' => Production::where('status', 'borrowed')->sum('quantity'),
-            'total_borrowed_types' => Production::where('status', 'borrowed')->distinct('product_id')->count('product_id'),
+            'total_borrowed_units' => $totalBorrowedUnits,
+            'total_borrowed_types' => $totalBorrowedTypes,
 
-            // New Analisys Cards Data
+            // New Analysis Cards Data
             'stock_health_rate' => $stockHealthRate,
             'monthly_entries_qty' => $monthlyEntriesQty,
             'monthly_exits_qty' => $monthlyExitsQty,
             'overdue_loans_count' => $overdueLoansCount,
             'pending_cart_requests' => $pendingCartRequestsCount,
 
-            // Lists
+            // Lists (Filtered)
             'upcomingReturns' => Production::with('product')
+                ->whereHas('product', function ($q) use ($allowedCategoryIds) {
+                    $q->whereIn('category_id', $allowedCategoryIds);
+                })
                 ->where('status', 'borrowed')
                 ->whereDate('return_date', Carbon::tomorrow())
                 ->get(),
-            'recent_entries' => StockEntries::with('product')->latest()->take(5)->get(),
-            'recent_exits' => StockExits::with('product')->latest()->take(5)->get(),
+
+            'recent_entries' => StockEntries::with('product')
+                ->whereHas('product', function ($q) use ($allowedCategoryIds) {
+                    $q->whereIn('category_id', $allowedCategoryIds);
+                })
+                ->latest()
+                ->take(5)
+                ->get(),
+
+            'recent_exits' => StockExits::with('product')
+                ->whereHas('product', function ($q) use ($allowedCategoryIds) {
+                    $q->whereIn('category_id', $allowedCategoryIds);
+                })
+                ->latest()
+                ->take(5)
+                ->get(),
 
             // Charts
             'monthlyFlowChart' => $monthlyFlowData,
@@ -87,7 +144,7 @@ class DashboardService
         ];
     }
 
-    private function getMonthlyFlowChartData(): array
+    private function getMonthlyFlowChartData(array $allowedCategoryIds): array
     {
         $months = [];
         $entries = [];
@@ -97,11 +154,17 @@ class DashboardService
             $date = Carbon::now()->subMonths($i);
             $monthName = $date->translatedFormat('M Y');
 
-            $entryTotal = StockEntries::whereMonth('entry_date', $date->month)
+            $entryTotal = StockEntries::whereHas('product', function ($q) use ($allowedCategoryIds) {
+                $q->whereIn('category_id', $allowedCategoryIds);
+            })
+                ->whereMonth('entry_date', $date->month)
                 ->whereYear('entry_date', $date->year)
                 ->sum('quantity');
 
-            $exitTotal = StockExits::whereMonth('exit_date', $date->month)
+            $exitTotal = StockExits::whereHas('product', function ($q) use ($allowedCategoryIds) {
+                $q->whereIn('category_id', $allowedCategoryIds);
+            })
+                ->whereMonth('exit_date', $date->month)
                 ->whereYear('exit_date', $date->year)
                 ->sum('quantity');
 
@@ -117,9 +180,10 @@ class DashboardService
         ];
     }
 
-    private function getCategoryDistributionChartData(): array
+    private function getCategoryDistributionChartData(array $allowedCategoryIds): array
     {
-        $categories = Category::withCount('products')
+        $categories = Category::whereIn('id', $allowedCategoryIds)
+            ->withCount('products')
             ->orderByDesc('products_count')
             ->take(5)
             ->get();
@@ -130,9 +194,12 @@ class DashboardService
         ];
     }
 
-    private function getFastMovingProductsData(): array
+    private function getFastMovingProductsData(array $allowedCategoryIds): array
     {
-        $topExits = StockExits::select('product_id', DB::raw('SUM(quantity) as total_qty'))
+        $topExits = StockExits::whereHas('product', function ($q) use ($allowedCategoryIds) {
+            $q->whereIn('category_id', $allowedCategoryIds);
+        })
+            ->select('product_id', DB::raw('SUM(quantity) as total_qty'))
             ->groupBy('product_id')
             ->orderByDesc('total_qty')
             ->with('product')
