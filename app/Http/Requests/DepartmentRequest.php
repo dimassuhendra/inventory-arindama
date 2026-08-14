@@ -18,7 +18,7 @@ class DepartmentRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:departments,name,' . $id,
             'code' => 'nullable|string|max:20|unique:departments,code,' . $id,
-            'company_name' => 'required|in:Perusahaan A,Perusahaan B,Perusahaan C,Perusahaan D,Perusahaan E,General',
+            'company_name' => 'required|in:PT Agung Putra Nirantara Mandiri,PT Kirana Baskara Kuwara,PT Lancar Anja Kuwaga,PT Praguwa Wahyu Astama,PT Teknologi Arindama Andra,General',
             'description' => 'nullable|string',
         ];
     }

@@ -15,7 +15,7 @@ class ProductRequest extends FormRequest
     {
         return [
             // Identifikasi & Klasifikasi
-            'company_name'                 => 'required|in:Perusahaan A,Perusahaan B,Perusahaan C,Perusahaan D,Perusahaan E,General',
+            'company_name'                 => 'required|in:PT Agung Putra Nirantara Mandiri,PT Kirana Baskara Kuwara,PT Lancar Anja Kuwaga,PT Praguwa Wahyu Astama,PT Teknologi Arindama Andra,General',
             'category_id'                  => 'required|exists:categories,id',
             'sub_category_id'              => 'nullable|exists:sub_categories,id',
             'name'                         => 'required|string|max:255',
