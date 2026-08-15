@@ -10,6 +10,9 @@ class Users extends Authenticatable
 {
     use Notifiable, HasRoles;
 
+    // Memastikan Eloquent mengacu pada tabel 'users'
+    protected $table = 'users';
+
     protected $guard_name = 'web';
 
     protected $fillable = [
@@ -39,5 +42,17 @@ class Users extends Authenticatable
     public function stockExits()
     {
         return $this->hasMany(StockExits::class, 'user_id');
+    }
+
+    // ➕ RELASI BARU: Supplier yang dibuat oleh User ini
+    public function suppliers()
+    {
+        return $this->hasMany(Suppliers::class, 'user_id');
+    }
+
+    // ➕ RELASI BARU: Kategori yang dibuat oleh User ini
+    public function categories()
+    {
+        return $this->hasMany(Category::class, 'user_id');
     }
 }

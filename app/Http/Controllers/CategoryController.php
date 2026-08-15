@@ -16,9 +16,8 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        // Ambil seluruh data halaman termasuk $total_categories, $top_category_name, dll dari Service
         $data = $this->categoryService->getCategoryPageData();
         $data['isSuperAdmin'] = CategoryService::isSuperAdmin();
 
@@ -28,11 +27,10 @@ class CategoryController extends Controller
     public function store(CategoryRequest $request)
     {
         try {
-            $this->categoryService->createCategory($request->all());
-
+            $this->categoryService->createCategory($request->validated());
             return redirect()->back()->with('success', 'Kategori berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menambah kategori: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
 
@@ -40,24 +38,10 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::findOrFail($id);
-
-            if (!CategoryService::canUserManage($category)) {
-                return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk mengubah kategori ini.');
-            }
-
-            $data = $request->validated();
-
-            if (!CategoryService::isSuperAdmin()) {
-                unset($data['allowed_roles']);
-            } else if (!isset($data['allowed_roles'])) {
-                $data['allowed_roles'] = null;
-            }
-
-            $category->update($data);
-
+            $this->categoryService->updateCategory($category, $request->validated());
             return redirect()->back()->with('success', 'Kategori berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal memperbarui kategori: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
 
@@ -65,16 +49,10 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::findOrFail($id);
-
-            if (!CategoryService::canUserManage($category)) {
-                return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk menghapus kategori ini.');
-            }
-
-            $category->delete();
-
+            $this->categoryService->deleteCategory($category);
             return redirect()->back()->with('success', 'Kategori berhasil dihapus.');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menghapus kategori: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
         }
     }
 }

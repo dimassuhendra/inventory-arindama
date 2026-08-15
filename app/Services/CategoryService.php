@@ -3,125 +3,132 @@
 namespace App\Services;
 
 use App\Models\Category;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 
 class CategoryService
 {
-
     public static function isSuperAdmin(): bool
     {
         $user = Auth::user();
+        if (!$user) return false;
 
-        if (!$user) {
-            return false;
-        }
-
-        // 1. Cek via Spatie Permission (hasAnyRole)
         $adminRoles = ['Super Admin', 'superadmin', 'Superadmin', 'super_admin', 'Administrator', 'administrator', 'Admin', 'admin'];
-        if ($user->hasAnyRole($adminRoles)) {
-            return true;
-        }
-
-        // 2. Fallback Direct Relation Check (Mengantisipasi Spatie Cache Issue di Production)
-        if ($user->roles && $user->roles->contains(function ($role) use ($adminRoles) {
-            return in_array($role->name, $adminRoles);
-        })) {
-            return true;
-        }
-
-        return false;
+        return $user->hasAnyRole($adminRoles);
     }
 
     public function getCategoryPageData(): array
     {
         $user = Auth::user();
+        $userRoleNames = $user ? $user->getRoleNames()->toArray() : [];
 
-        $allCategories = Category::withCount('products')
-            ->with('products')
-            ->orderBy('name', 'asc')
-            ->get();
+        // Query Utama: Hanya mengambil Kategori Utama (parent_id = NULL)
+        $query = Category::with(['creator.roles', 'children.creator.roles', 'products'])
+            ->withCount('products')
+            ->whereNull('parent_id');
 
-        // 2. Filter kategori: Hanya tampilkan yang diizinkan untuk user aktif
-        $categories = $allCategories->filter(function ($cat) {
-            return self::canUserManage($cat);
-        });
+        // ISOLASI DATA BERDASARKAN ROLE
+        if (!self::isSuperAdmin() && $user) {
+            $query->where(function ($q) use ($user, $userRoleNames) {
+                $q->where('user_id', $user->id)
+                    ->orWhereHas('creator.roles', function ($roleQuery) use ($userRoleNames) {
+                        $roleQuery->whereIn('name', $userRoleNames);
+                    });
+            });
+        }
 
-        // 3. Hitung Mini Analytics berdasarkan kategori yang dapat diakses user
+        $categories = $query->orderBy('name', 'asc')->get();
+
+        // Induk Kategori untuk Dropdown Pilihan Sub-Kategori di Modal Form
+        $parentCategoryQuery = Category::whereNull('parent_id');
+        if (!self::isSuperAdmin() && $user) {
+            $parentCategoryQuery->where(function ($q) use ($user, $userRoleNames) {
+                $q->where('user_id', $user->id)
+                    ->orWhereHas('creator.roles', function ($roleQuery) use ($userRoleNames) {
+                        $roleQuery->whereIn('name', $userRoleNames);
+                    });
+            });
+        }
+        $parentCategories = $parentCategoryQuery->orderBy('name', 'asc')->get();
+
+        // Mini Analytics (Scoped)
         $totalCategories = $categories->count();
         $topCategory = $categories->sortByDesc('products_count')->first();
-        $restrictedCategoriesCount = $categories->filter(function ($cat) {
-            return !empty($cat->allowed_roles);
-        })->count();
-
-        // 4. Roles Data
-        $roles = \Spatie\Permission\Models\Role::orderBy('name', 'asc')->get();
+        $totalSubCategories = Category::whereNotNull('parent_id')->whereIn('parent_id', $categories->pluck('id'))->count();
 
         return [
-            'categories' => $categories,
-            'roles' => $roles,
-            'total_categories' => $totalCategories,
-            'top_category_name' => $topCategory ? $topCategory->name : '-',
-            'top_category_count' => $topCategory ? $topCategory->products_count : 0,
-            'restricted_count' => $restrictedCategoriesCount,
+            'categories'            => $categories,
+            'parent_categories'     => $parentCategories,
+            'roles'                 => \Spatie\Permission\Models\Role::orderBy('name', 'asc')->get(),
+            'total_categories'      => $totalCategories,
+            'top_category_name'     => $topCategory ? $topCategory->name : '-',
+            'top_category_count'    => $topCategory ? $topCategory->products_count : 0,
+            'total_sub_categories'  => $totalSubCategories,
         ];
     }
 
     public function createCategory(array $data): Category
     {
         $user = Auth::user();
+        $data['user_id'] = Auth::id();
 
-        // Jika bukan Super Admin, paksa isi 'allowed_roles' dengan daftar role milik user saat ini
         if (!self::isSuperAdmin() && $user) {
-            $userRoles = $user->roles->pluck('name')->toArray();
+            $userRoles = $user->getRoleNames()->toArray();
             $data['allowed_roles'] = !empty($userRoles) ? array_values($userRoles) : null;
         }
 
         return Category::create([
             'name'          => $data['name'],
+            'parent_id'     => $data['parent_id'] ?? null,
+            'user_id'       => $data['user_id'],
             'allowed_roles' => $data['allowed_roles'] ?? null,
         ]);
     }
 
     public function updateCategory(Category $category, array $data): bool
     {
+        $this->validateOwnership($category);
+
         return $category->update([
-            'name' => $data['name'],
-            'allowed_roles' => $data['allowed_roles'] ?? null,
+            'name'          => $data['name'],
+            'parent_id'     => $data['parent_id'] ?? null,
+            'allowed_roles' => $data['allowed_roles'] ?? $category->allowed_roles,
         ]);
     }
 
     public function deleteCategory(Category $category): bool
     {
+        $this->validateOwnership($category);
+
         if ($category->products()->count() > 0) {
-            throw new \Exception('Kategori tidak bisa dihapus karena masih memiliki produk.');
+            throw new \Exception('Kategori tidak dapat dihapus karena masih terhubung dengan produk.');
+        }
+
+        if ($category->children()->count() > 0) {
+            throw new \Exception('Kategori induk tidak dapat dihapus karena memiliki sub kategori.');
         }
 
         return $category->delete();
     }
 
-    /**
-     * Helper Check: Apakah user saat ini memiliki akses penuh (write/edit) ke kategori tertentu
-     */
     public static function canUserManage(Category $category): bool
     {
         $user = Auth::user();
+        if (!$user) return false;
+        if (self::isSuperAdmin()) return true;
 
-        if (!$user) {
-            return false;
+        $supplierRoleNames = $category->creator ? $category->creator->getRoleNames()->toArray() : [];
+        $userRoleNames = $user->getRoleNames()->toArray();
+
+        $isOwner = $category->user_id === $user->id;
+        $isSameRole = (bool) array_intersect($userRoleNames, $supplierRoleNames);
+
+        return $isOwner || $isSameRole;
+    }
+
+    private function validateOwnership(Category $category): void
+    {
+        if (!self::canUserManage($category)) {
+            throw new \Exception('Anda tidak memiliki hak akses untuk memanipulasi kategori ini.');
         }
-
-        // 1. Superadmin SELALU BISA mengelola seluruh kategori
-        if (self::isSuperAdmin()) {
-            return true;
-        }
-
-        // 2. Kategori Public (allowed_roles Kosong / NULL): Semua User BISA mengelola
-        if (empty($category->allowed_roles)) {
-            return true;
-        }
-
-        // 3. Kategori Restricted: Hanya User dengan Role yang sesuai
-        return $user->hasAnyRole($category->allowed_roles);
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -11,10 +13,11 @@ class Category extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'user_id',
+        'parent_id',
         'slug',
-        'image',
-        'allowed_roles'
+        'name',
+        'allowed_roles',
     ];
 
     protected $casts = [
@@ -37,6 +40,22 @@ class Category extends Model
         static::updating(function ($category) {
             $category->slug = Str::slug($category->name);
         });
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(Users::class, 'user_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    // Relasi Sub Kategori Anak
+    public function children(): HasMany
+    {
+        return $this->hasMany(Category::class, 'parent_id')->orderBy('name', 'asc');
     }
 
     /**
