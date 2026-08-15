@@ -2,32 +2,27 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Department extends Model
 {
-    use HasFactory;
-
-    protected $fillable = [
-        'code',
-        'name',
-        'description',
-        'company_name',
-    ];
+    protected $fillable = ['code', 'name', 'description'];
 
     /**
-     * Relasi ke PIC (Satu departemen memiliki banyak PIC)
+     * Relasi Many-to-Many ke Company
      */
+    public function companies(): BelongsToMany
+    {
+        return $this->belongsToMany(Company::class, 'company_department');
+    }
+
     public function pics(): HasMany
     {
         return $this->hasMany(Pic::class, 'department_id');
     }
 
-    /**
-     * Relasi ke Products/Aset (Satu departemen ditempati banyak aset)
-     */
     public function products(): HasMany
     {
         return $this->hasMany(Products::class, 'department_id');

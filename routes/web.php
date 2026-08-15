@@ -13,6 +13,7 @@ use App\Http\Controllers\CartRequestController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\PicController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UserController;
@@ -61,6 +62,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', CategoryController::class);
     Route::resource('suppliers', SupplierController::class);
     Route::resource('departments', DepartmentController::class)->except(['create', 'edit', 'show']);
+    Route::post('/companies', [CompanyController::class, 'store'])->name('companies.store');
+    Route::put('/companies/{company}', [CompanyController::class, 'update'])->name('companies.update');
+    Route::delete('/companies/{company}', [CompanyController::class, 'destroy'])->name('companies.destroy');
     Route::resource('pics', PicController::class)->except(['create', 'edit', 'show']);
     Route::resource('users', UserController::class);
     Route::put('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
@@ -70,6 +74,6 @@ Route::middleware('auth')->group(function () {
         Route::put('/roles/{role}', [UserController::class, 'updateRole'])->name('roles.update');
         Route::delete('/roles/{role}', [UserController::class, 'destroyRole'])->name('roles.destroy');
     });
-    
+
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
