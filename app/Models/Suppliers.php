@@ -2,33 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Suppliers extends Model
 {
-    use HasFactory;
+    protected $fillable = ['user_id', 'name', 'telp', 'address'];
 
-    // Nama tabel secara default adalah suppliers (jamak), 
-    // jadi kita tidak perlu mendefinisikannya secara manual kecuali namanya berbeda.
-
-    protected $fillable = [
-        'name',
-        'telp',
-        'address',
-    ];
-
-    /**
-     * Relasi ke Model StockEntries
-     * Satu supplier bisa mengirim barang berkali-kali (Barang Masuk)
-     */
-    public function stockEntries()
+    public function creator(): BelongsTo
     {
-        return $this->hasMany(StockEntries::class, 'supplier_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function products()
     {
         return $this->hasMany(Products::class, 'supplier_id');
+    }
+
+    public function stockEntries()
+    {
+        return $this->hasMany(StockEntries::class, 'supplier_id');
     }
 }

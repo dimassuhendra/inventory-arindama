@@ -6,7 +6,7 @@
         <!-- 1. HEADER & ACTION BUTTON -->
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
-                <h2 class="text-xl lg:text-2xl font-serif font-bold text-slate-800">Daftar Supplier</h2>
+                <h2 class="text-xl lg:text-2xl font-serif font-bold text-slate-800">Daftar Supplier / Vendor</h2>
                 <p class="text-xs text-slate-500 mt-1">Kelola data rekanan pemasok dan saluran pengadaan barang</p>
             </div>
 
@@ -33,8 +33,7 @@
                         <i class="fa-solid fa-handshake"></i>
                     </div>
                 </div>
-                <i
-                    class="fa-solid fa-building-flag absolute -right-3 -bottom-3 text-6xl text-white/10 group-hover:scale-110 transition-transform"></i>
+                <i class="fa-solid fa-building-flag absolute -right-3 -bottom-3 text-6xl text-white/10"></i>
             </div>
 
             <!-- Supplier Terbanyak Memasok -->
@@ -44,7 +43,8 @@
                     <div>
                         <p class="text-[10px] font-bold text-blue-100 uppercase tracking-widest">Pemasok Teraktif</p>
                         <h3 class="text-sm font-serif font-bold text-white mt-1 truncate max-w-[170px]">
-                            {{ $top_supplier_name }}</h3>
+                            {{ $top_supplier_name }}
+                        </h3>
                         <p
                             class="text-[10px] text-blue-100 font-semibold bg-white/15 px-2 py-0.5 rounded-md w-max mt-1 backdrop-blur-sm">
                             {{ $top_supplier_products }} Jenis Produk
@@ -55,8 +55,7 @@
                         <i class="fa-solid fa-award"></i>
                     </div>
                 </div>
-                <i
-                    class="fa-solid fa-trophy absolute -right-3 -bottom-3 text-6xl text-white/10 group-hover:scale-110 transition-transform"></i>
+                <i class="fa-solid fa-trophy absolute -right-3 -bottom-3 text-6xl text-white/10"></i>
             </div>
 
             <!-- Total Produk Terhubung -->
@@ -67,15 +66,15 @@
                         <p class="text-[10px] font-bold text-teal-200 uppercase tracking-widest">Produk Terhubung</p>
                         <h3 class="text-2xl font-serif font-bold text-inv-mint mt-1">
                             {{ number_format($total_mapped_products) }} <span
-                                class="text-xs font-normal text-slate-300">Item</span></h3>
+                                class="text-xs font-normal text-slate-300">Item</span>
+                        </h3>
                     </div>
                     <div
                         class="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md text-inv-mint flex items-center justify-center text-lg">
                         <i class="fa-solid fa-boxes-stacked"></i>
                     </div>
                 </div>
-                <i
-                    class="fa-solid fa-cubes absolute -right-3 -bottom-3 text-6xl text-white/10 group-hover:scale-110 transition-transform"></i>
+                <i class="fa-solid fa-cubes absolute -right-3 -bottom-3 text-6xl text-white/10"></i>
             </div>
         </div>
 
@@ -83,7 +82,6 @@
         <div class="bg-slate-200/60 backdrop-blur-md p-4 rounded-2xl border border-slate-300/80">
             <form method="GET" action="{{ route('suppliers.index') }}"
                 class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-                <!-- Search Input -->
                 <div class="relative sm:col-span-8">
                     <i
                         class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -98,7 +96,6 @@
                     @endif
                 </div>
 
-                <!-- Select Per Page -->
                 <div class="sm:col-span-4 flex items-center justify-end gap-2">
                     <span class="text-[11px] text-slate-500 font-medium">Baris:</span>
                     <select name="per_page" onchange="this.form.submit()"
@@ -120,6 +117,8 @@
                         <tr>
                             <th class="px-5 py-3.5 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Nama
                                 Perusahaan</th>
+                            <th class="px-5 py-3.5 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Dibuat
+                                Oleh</th>
                             <th class="px-5 py-3.5 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Kontak &
                                 WA</th>
                             <th class="px-5 py-3.5 text-[10px] font-bold text-slate-600 uppercase tracking-widest">Alamat
@@ -140,11 +139,28 @@
                                     <span class="text-xs font-bold text-slate-800 block">{{ $supplier->name }}</span>
                                 </td>
 
+                                <!-- Dibuat Oleh (User & Role Badge) -->
+                                <td class="px-5 py-3.5 text-xs">
+                                    <p class="font-bold text-slate-700">{{ $supplier->creator->name ?? 'System' }}</p>
+                                    <div class="flex gap-1 mt-0.5">
+                                        @if ($supplier->creator)
+                                            @foreach ($supplier->creator->getRoleNames() as $role)
+                                                <span
+                                                    class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-300 text-slate-700 uppercase">
+                                                    {{ $role }}
+                                                </span>
+                                            @endforeach
+                                        @else
+                                            <span
+                                                class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-300 text-slate-500 uppercase">N/A</span>
+                                        @endif
+                                    </div>
+                                </td>
+
                                 <!-- Kontak & WhatsApp Direct Button -->
                                 <td class="px-5 py-3.5 text-xs text-slate-600 font-medium">
                                     @if ($supplier->telp)
                                         @php
-                                            // Format nomor ke 62 untuk URL WhatsApp Direct
                                             $cleanTelp = preg_replace('/[^0-9]/', '', $supplier->telp);
                                             if (str_starts_with($cleanTelp, '0')) {
                                                 $cleanTelp = '62' . substr($cleanTelp, 1);
@@ -200,9 +216,9 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                                <td colspan="6" class="px-6 py-12 text-center text-slate-400">
                                     <i class="fa-solid fa-truck-field text-3xl mb-2 opacity-30"></i>
-                                    <p class="text-xs italic">Belum ada data supplier yang tersimpan.</p>
+                                    <p class="text-xs italic">Belum ada data supplier yang tersimpan untuk role Anda.</p>
                                 </td>
                             </tr>
                         @endforelse
@@ -222,7 +238,6 @@
             class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
             <div
                 class="bg-slate-100 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-300 transform transition-all">
-
                 <div
                     class="bg-gradient-to-r from-inv-teal to-inv-primary p-5 text-white flex justify-between items-center">
                     <h3 id="modalTitle" class="font-serif font-bold text-base">Tambah Supplier Baru</h3>
@@ -246,15 +261,16 @@
 
                     <div>
                         <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
-                            No. Telepon / WhatsApp
+                            No. Telepon / WhatsApp <span class="text-rose-500">*</span>
                         </label>
-                        <input type="text" name="telp" id="sup_telp" placeholder="Isi strip (-) jika tidak ada nomor telepon"
+                        <input type="text" name="telp" id="sup_telp"
+                            placeholder="Isi strip (-) jika tidak ada nomor telepon"
                             class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-inv-teal">
                     </div>
 
                     <div>
                         <label class="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1.5">
-                            Alamat Kantor
+                            Alamat Kantor <span class="text-rose-500">*</span>
                         </label>
                         <textarea name="address" id="sup_address" rows="3" placeholder="Isi strip (-) jika tidak ada alamat"
                             class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-inv-teal"></textarea>
