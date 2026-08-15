@@ -6,12 +6,71 @@
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
                 <h2 class="text-xl lg:text-2xl font-serif font-bold text-slate-800">Master Data PIC (Person In Charge)</h2>
-                <p class="text-xs text-slate-500 mt-1">Kelola Penanggung Jawab & Pengguna Aset Perusahaan</p>
+                <p class="text-xs text-slate-500 mt-1">Kelola Penanggung Jawab & Pengguna Aset Perusahaan Group</p>
             </div>
             <button onclick="openPicModal('add')"
                 class="bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white px-4 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-2 font-bold text-xs cursor-pointer w-fit">
                 <i class="fa-solid fa-user-plus"></i> Tambah PIC
             </button>
+        </div>
+
+        <!-- STATISTICAL SUMMARY CARDS -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+            <!-- Card 1: Total PIC Terdaftar (Gradasi Teal to Mint) -->
+            <div
+                class="bg-gradient-to-br from-[#00a8b5] to-[#2dd4bf] p-4 rounded-2xl shadow-md text-white relative overflow-hidden group">
+                <div class="flex items-center justify-between relative z-10">
+                    <div>
+                        <p class="text-[10px] font-bold text-teal-100 uppercase tracking-widest">Total Terdaftar</p>
+                        <h3 class="text-2xl font-serif font-bold text-white mt-1">
+                            {{ number_format($total_pics) }} <span class="text-xs font-normal">Personil</span>
+                        </h3>
+                    </div>
+                    <div
+                        class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+                <i class="fa-solid fa-users absolute -right-3 -bottom-3 text-6xl text-white/10"></i>
+            </div>
+
+            <!-- Card 2: PIC Memegang Aset (Gradasi Primary to Box Blue) -->
+            <div
+                class="bg-gradient-to-br from-[#0c66c8] to-[#2563eb] p-4 rounded-2xl shadow-md text-white relative overflow-hidden group">
+                <div class="flex items-center justify-between relative z-10">
+                    <div>
+                        <p class="text-[10px] font-bold text-blue-100 uppercase tracking-widest">PIC Memegang Aset</p>
+                        <h3 class="text-2xl font-serif font-bold text-white mt-1">
+                            {{ number_format($pics_with_assets) }} <span class="text-xs font-normal">Personil</span>
+                        </h3>
+                    </div>
+                    <div
+                        class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md text-white flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                </div>
+                <i class="fa-solid fa-user-check absolute -right-3 -bottom-3 text-6xl text-white/10"></i>
+            </div>
+
+            <!-- Card 3: Total Aset Terdistribusi (Gradasi Deep Navy to Teal) -->
+            <div
+                class="bg-gradient-to-br from-[#081d34] via-[#0d2a4a] to-[#00a8b5] p-4 rounded-2xl shadow-md text-white relative overflow-hidden group">
+                <div class="flex items-center justify-between relative z-10">
+                    <div>
+                        <p class="text-[10px] font-bold text-teal-200 uppercase tracking-widest">Aset Terdistribusi</p>
+                        <h3 class="text-2xl font-serif font-bold text-white mt-1">
+                            {{ number_format($total_assets_assigned) }} <span class="text-xs font-normal">Unit</span>
+                        </h3>
+                    </div>
+                    <div
+                        class="w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md text-inv-mint flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                </div>
+                <i class="fa-solid fa-boxes-stacked absolute -right-3 -bottom-3 text-6xl text-white/10"></i>
+            </div>
+
         </div>
 
         <!-- Filter Bar -->
@@ -28,34 +87,31 @@
                 </div>
 
                 <!-- Filter Perusahaan -->
-                <div class="sm:col-span-3">
+                <div class="sm:col-span-4">
                     <select name="company_name" onchange="this.form.submit()"
                         class="w-full bg-slate-100 border border-slate-300 text-slate-700 text-xs rounded-xl p-2 outline-none focus:border-inv-teal">
                         <option value="">-- Semua Perusahaan --</option>
-                        @foreach (['Perusahaan A', 'Perusahaan B', 'Perusahaan C', 'Perusahaan D', 'Perusahaan E', 'General'] as $comp)
-                            <option value="{{ $comp }}" {{ request('company_name') == $comp ? 'selected' : '' }}>
-                                {{ $comp }}</option>
+                        @foreach ($companies as $comp)
+                            <option value="{{ $comp->name }}"
+                                {{ request('company_name') == $comp->name ? 'selected' : '' }}>
+                                {{ $comp->name }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
 
                 <!-- Filter Departemen -->
-                <div class="sm:col-span-3">
+                <div class="sm:col-span-4">
                     <select name="department_id" onchange="this.form.submit()"
                         class="w-full bg-slate-100 border border-slate-300 text-slate-700 text-xs rounded-xl p-2 outline-none focus:border-inv-teal">
                         <option value="">-- Semua Departemen --</option>
                         @foreach ($departments as $dept)
                             <option value="{{ $dept->id }}"
                                 {{ request('department_id') == $dept->id ? 'selected' : '' }}>
-                                {{ $dept->name }} ({{ $dept->company_name }})
+                                {{ $dept->name }}
                             </option>
                         @endforeach
                     </select>
-                </div>
-
-                <div class="sm:col-span-2 flex items-center justify-end">
-                    <span class="text-xs text-slate-500">Total PIC: <strong
-                            class="text-slate-800">{{ $total_pics }}</strong></span>
                 </div>
             </form>
         </div>
@@ -174,8 +230,8 @@
                                 class="text-rose-500">*</span></label>
                         <select name="company_name" id="pic_company" onchange="filterDepartmentsByCompany()" required
                             class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs text-slate-800 outline-none focus:border-inv-teal">
-                            @foreach (['PT Agung Putra Nirantara Mandiri', 'PT Kirana Baskara Kuwara', 'PT Lancar Anja Kuwaga', 'PT Praguwa Wahyu Astama', 'PT Teknologi Arindama Andra', 'General'] as $comp)
-                                <option value="{{ $comp }}">{{ $comp }}</option>
+                            @foreach ($companies as $comp)
+                                <option value="{{ $comp->name }}">{{ $comp->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -200,8 +256,9 @@
                             class="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs outline-none focus:border-inv-teal">
                             <option value="">-- Pilih Departemen --</option>
                             @foreach ($departments as $dept)
-                                <option value="{{ $dept->id }}" data-company="{{ $dept->company_name }}">
-                                    {{ $dept->name }} ({{ $dept->company_name }})</option>
+                                <option value="{{ $dept->id }}" data-companies='@json($dept->companies->pluck('name'))'>
+                                    {{ $dept->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -226,7 +283,7 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white font-bold py-2.5 rounded-xl shadow-md text-xs uppercase tracking-wider mt-2">
+                    class="w-full bg-gradient-to-r from-inv-teal to-inv-primary hover:from-inv-hover hover:to-inv-hover text-white font-bold py-2.5 rounded-xl shadow-md text-xs uppercase tracking-wider mt-2 cursor-pointer">
                     Simpan Data PIC
                 </button>
             </form>
@@ -234,15 +291,15 @@
     </div>
 
     <script>
-        // Filter Pilihan Departemen berdasarkan Perusahaan yang dipilih di Modal
+        // Filter Departemen berdasarkan Perusahaan (Pivot Many-to-Many)
         function filterDepartmentsByCompany() {
             const selectedCompany = document.getElementById('pic_company').value;
             const deptOptions = document.querySelectorAll('#pic_dept option');
 
             deptOptions.forEach(opt => {
-                if (!opt.value) return; // Skip pilihan default
-                const deptCompany = opt.getAttribute('data-company');
-                if (deptCompany === selectedCompany || deptCompany === 'General' || selectedCompany === 'General') {
+                if (!opt.value) return;
+                const companiesData = JSON.parse(opt.getAttribute('data-companies') || '[]');
+                if (companiesData.includes(selectedCompany)) {
                     opt.style.display = 'block';
                 } else {
                     opt.style.display = 'none';
@@ -262,7 +319,7 @@
                 title.innerText = 'Edit Data PIC';
                 form.action = `/pics/${pic.id}`;
                 method.value = 'PUT';
-                document.getElementById('pic_company').value = pic.company_name || 'General';
+                document.getElementById('pic_company').value = pic.company_name || '';
                 filterDepartmentsByCompany();
                 document.getElementById('pic_nip').value = pic.nip || '';
                 document.getElementById('pic_name').value = pic.name || '';

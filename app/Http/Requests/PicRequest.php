@@ -20,7 +20,7 @@ class PicRequest extends FormRequest
             'nip'           => 'nullable|string|max:50|unique:pics,nip,' . $id,
             'department_id' => 'required|exists:departments,id',
             'position'      => 'nullable|string|max:255',
-            'company_name' => 'required|in:PT Agung Putra Nirantara Mandiri,PT Kirana Baskara Kuwara,PT Lancar Anja Kuwaga,PT Praguwa Wahyu Astama,PT Teknologi Arindama Andra,General',
+            'company_name'  => 'required|string|max:255',
             'phone'         => 'nullable|string|max:20',
             'email'         => 'nullable|email|max:255',
         ];
