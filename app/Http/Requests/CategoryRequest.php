@@ -29,24 +29,18 @@ class CategoryRequest extends FormRequest
                     ->ignore($id)
                     ->where(function ($query) use ($user) {
                         if (CategoryService::isSuperAdmin()) {
-                            return $query->where('user_id', $user->id);
+                            return $query->where('categories.user_id', $user->id);
                         }
 
                         $userRoleNames = $user ? $user->getRoleNames()->toArray() : [];
 
-                        // Melakukan JOIN eksplisit dengan kriteria namespace 'App\Models\Users'
-                        $query->leftJoin('users', 'categories.user_id', '=', 'users.id')
-                            ->leftJoin('model_has_roles', function ($join) {
-                                $join->on('users.id', '=', 'model_has_roles.model_id')
-                                    ->whereIn('model_has_roles.model_type', ['App\\Models\\Users', 'App\\Models\\User']);
-                            })
-                            ->leftJoin('roles', 'model_has_roles.role_id', '=', 'roles.id');
-
                         return $query->where(function ($q) use ($user, $userRoleNames) {
+                            // Cek milik user itu sendiri
                             $q->where('categories.user_id', $user->id);
 
-                            if (!empty($userRoleNames)) {
-                                $q->orWhereIn('roles.name', $userRoleNames);
+                            // Cek role user di kolom JSON allowed_roles
+                            foreach ($userRoleNames as $role) {
+                                $q->orWhereJsonContains('categories.allowed_roles', $role);
                             }
                         });
                     }),
