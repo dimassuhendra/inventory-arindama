@@ -27,4 +27,9 @@ class Department extends Model
     {
         return $this->hasMany(Products::class, 'department_id');
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(Users::class, 'user_id');
+    }
 }

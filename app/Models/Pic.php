@@ -36,4 +36,9 @@ class Pic extends Model
     {
         return $this->hasMany(Products::class, 'pic_id');
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(Users::class, 'user_id');
+    }
 }
