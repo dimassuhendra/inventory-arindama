@@ -17,6 +17,54 @@
             </button>
         </div>
 
+        <!-- BANNER PERINGATAN MODUL BELUM 100% (WITH PROGRESS BAR) -->
+        <div
+            class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 backdrop-blur-md flex flex-col gap-3 shadow-sm">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <!-- SVG Maintenance Animated -->
+                    <div
+                        class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-600 flex items-center justify-center shrink-0 text-xl border border-amber-500/30 mt-0.5 sm:mt-0">
+                        <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                                d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-serif font-bold text-amber-900 text-sm">Fitur Dalam Penyesuaian Sistem</h4>
+                            <span
+                                class="bg-amber-500/20 text-amber-700 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border border-amber-500/30">Versi
+                                Optimalisasi</span>
+                        </div>
+                        <p class="text-xs text-amber-800/90 mt-1 leading-relaxed">
+                            Modul kategori saat ini sudah dapat digunakan secara normal untuk pengelolaan harian. Namun,
+                            penambahan <strong>nama kategori yang sama antar role pengguna</strong> sementara ini belum
+                            didukung. Tim pengembang sedang menyelesaikan penyesuaian akhir.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROGRESS BAR SECTION -->
+            <div class="pt-2 border-t border-amber-500/20 flex flex-col gap-1.5">
+                <div class="flex justify-between items-center text-[10px] font-bold">
+                    <span class="text-amber-800 uppercase tracking-wider flex items-center gap-1">
+                        <i class="fa-solid fa-code-commit text-amber-600"></i> Progres Pengembangan Modul
+                    </span>
+                    <span class="text-amber-900 font-serif">80% Selesai</span>
+                </div>
+                <!-- Outer Track -->
+                <div class="w-full h-2 bg-amber-500/20 rounded-full overflow-hidden p-0.5 border border-amber-500/20">
+                    <!-- Inner Fill Bar -->
+                    <div class="h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full transition-all duration-500 shadow-sm"
+                        style="width: 80%"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- 2. MINI ANALYTICS BAR (3 CARDS TEMA INV) -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
@@ -156,7 +204,8 @@
                                                     title="Edit Sub-Kategori">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </button>
-                                                <form action="{{ route('categories.destroy', $child->id) }}" method="POST"
+                                                <form action="{{ route('categories.destroy', $child->id) }}"
+                                                    method="POST"
                                                     onsubmit="return confirm('Hapus sub kategori {{ addslashes($child->name) }}?')">
                                                     @csrf @method('DELETE')
                                                     <button type="submit"
@@ -204,7 +253,8 @@
             <div
                 class="bg-slate-100 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-300 transform transition-all">
 
-                <div class="bg-gradient-to-r from-inv-teal to-inv-primary p-5 text-white flex justify-between items-center">
+                <div
+                    class="bg-gradient-to-r from-inv-teal to-inv-primary p-5 text-white flex justify-between items-center">
                     <h3 id="modalTitle" class="font-serif font-bold text-base tracking-wide">Tambah Kategori</h3>
                     <button onclick="closeModal()" class="text-white/70 hover:text-white transition cursor-pointer">
                         <i class="fa-solid fa-xmark text-lg"></i>
